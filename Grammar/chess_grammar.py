@@ -124,7 +124,7 @@ productions = {
     "expr": [["term", TokeTypes.tokSum, "expr"], ["term", TokeTypes.tokSub, "expr"], ["term", "comparer", "expr"], ["term"]],
 
     # terminos
-    "term": [["term", TokeTypes.tokMul, "factor"], ["term", TokeTypes.tokDiv, "factor"], ["factor"]],
+    "term": [["factor", TokeTypes.tokMul, "term"], ["factor", TokeTypes.tokDiv,"term" ], ["factor"]],
 
     # factor
     "factor": [["atom"], [TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen]],
