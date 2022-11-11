@@ -72,18 +72,6 @@ productions = {
     # "lenguage_funtion":[["die"],["modify"],["evolve"],["add"],["move"],["eat"],["create"]],  # sacado para ponerlo en expresion
     "lenguage_funtion": [["insert"], ["delete"], ["move"]],
 
-    # lenguage funtion die
-    # "die":[[TokeTypes.tokDie,TokeTypes.tokOpenParen,"args_list",TokeTypes.tokClosedParen]],
-
-    # Modify leng_type
-    # "modify":[[TokeTypes.tokModify,TokeTypes.tokOpenParen,"args_list",TokeTypes.tokClosedParen]],
-
-    # lenguage funtion die
-    # "evolve":[[TokeTypes.tokOpenParen,"args_list",TokeTypes.tokClosedParen]],
-
-    # lenguage funtion add al mapa cosas como fenomeno o especie
-    # "add":[[TokeTypes.tokID,TokeTypes.tokPoint,TokeTypes.tokAdd,TokeTypes.tokOpenParen,"args_list",TokeTypes.tokClosedParen]],
-
     # lenguage funtion move
     # "move":[[TokeTypes.tokMove,TokeTypes.tokOpenParen,"args_list",TokeTypes.tokClosedParen]],
     # chess version.... It takes a board identifier and 4 ints (initial and final positions)
@@ -124,7 +112,7 @@ productions = {
     "expr": [["term", TokeTypes.tokSum, "expr"], ["term", TokeTypes.tokSub, "expr"], ["term", "comparer", "expr"], ["term"]],
 
     # terminos
-    "term": [["factor", TokeTypes.tokMul, "term"], ["factor", TokeTypes.tokDiv,"term" ], ["factor"]],
+    "term": [["term", TokeTypes.tokMul, "factor"], ["term", TokeTypes.tokDiv, "factor"], ["factor"]],
 
     # factor
     "factor": [["atom"], [TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen]],
@@ -154,18 +142,7 @@ productions = {
     # retorna el valor asociado a la llave
     "insert_dic": [[TokeTypes.tokReturnDicc, TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen]],
 
-    # separacion para los metodos que usan escalares y los que usen 2 matrices
-    #"matrix_func": [["escalar"], ["vectorial"]],
-
-    # suma y resta vectorial
-    #"vectorial": [[TokeTypes.tokMSum, "matrix_sentence_rest"], [TokeTypes.tokMSub, "matrix_sentence_rest"]],
-
-    # multiplicacion y division escalar
-    #"escalar": [[TokeTypes.tokMDiv, "matrix_sentence_rest"], [TokeTypes.tokMMul, "matrix_sentence_rest"]],
-
-    # matrices vec
-    #"matrix_sentence_rest": [[TokeTypes.tokOpenParen, TokeTypes.tokID, TokeTypes.tokID, TokeTypes.tokClosedParen]],
-
+ 
     # lista de expresiones
     "expr_list": [["expr"], ["expr_list_fix"]],
 
