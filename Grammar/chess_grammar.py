@@ -118,7 +118,7 @@ productions = {
     "factor": [["atom"], [TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen]],
 
     # atomos
-    "atom": [[TokeTypes.tokID], ["func_call"], [TokeTypes.tokNumber], [TokeTypes.tokNone], [TokeTypes.tokChain], [TokeTypes.tokTrue], [TokeTypes.tokFalse], ["epsilon"]],
+    "atom": [[TokeTypes.tokID], ["func_call"], [TokeTypes.tokNumber] ,[TokeTypes.tokNone],[TokeTypes.tokNone], [TokeTypes.tokChain], [TokeTypes.tokTrue], [TokeTypes.tokFalse], ["epsilon"]],
 
     # comparadores
     "comparer": [[TokeTypes.tokEqual], [TokeTypes.tokNot], [TokeTypes.tokNotEqual], [TokeTypes.tokGreaterOrEqual], [TokeTypes.tokGreater], [TokeTypes.tokLess], [TokeTypes.tokLessOrEqual], [TokeTypes.tokAnd], [TokeTypes.tokOr]],
@@ -142,12 +142,13 @@ productions = {
     # retorna el valor asociado a la llave
     "insert_dic": [[TokeTypes.tokReturnDicc, TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen]],
 
+    # vector type
  
     # lista de expresiones
-    "expr_list": [["expr"], ["expr_list_fix"]],
+    #"expr_list": [["expr"], ["expr_list_fix"]],
 
     # fix de expresion list
-    "expr_list_fix": [[TokeTypes.tokComma, "expr_list"], ["epsilon"]]
+    #"expr_list_fix": [[TokeTypes.tokComma, "expr_list"], ["epsilon"]]
 }
 
 #------------------------------------------------------------------------------------------------------#
