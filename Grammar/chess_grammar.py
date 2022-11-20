@@ -118,7 +118,7 @@ productions = {
     "factor": [["atom"], [TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen]],
 
     # atomos
-    "atom": [[TokeTypes.tokID], ["func_call"], [TokeTypes.tokNumber] ,[TokeTypes.tokNone],[TokeTypes.tokNone], [TokeTypes.tokChain], [TokeTypes.tokTrue], [TokeTypes.tokFalse], ["epsilon"]],
+    "atom": [[TokeTypes.tokID], ["func_call"], [TokeTypes.tokNumber]   ,[TokeTypes.tokNone],[TokeTypes.tokNone], [TokeTypes.tokChain], [TokeTypes.tokTrue], [TokeTypes.tokFalse], ["epsilon"]],
 
     # comparadores
     "comparer": [[TokeTypes.tokEqual], [TokeTypes.tokNot], [TokeTypes.tokNotEqual], [TokeTypes.tokGreaterOrEqual], [TokeTypes.tokGreater], [TokeTypes.tokLess], [TokeTypes.tokLessOrEqual], [TokeTypes.tokAnd], [TokeTypes.tokOr]],

@@ -1,15 +1,11 @@
-from calendar import TextCalendar
 from dataclasses import dataclass
 from distutils.log import error
-from inspect import ArgSpec
 from itertools import chain
 from lib2to3.pytree import Node
 from multiprocessing import Condition, context
 from pickle import FALSE
 from platform import node
 from tokenize import Double
-from webbrowser import Opera
-from wsgiref import validate
 
 from numpy import true_divide
 
@@ -1641,10 +1637,5 @@ def fillDiccFun():
     diccFunDicc["dic_dec"]=DeclaretDiccNode
     
     
-diccMatrixFunc={}
-def fillDiccFunVec():
-    diccMatrixFunc[TokeTypes.tokMSum]=matrixSumNode
-    diccMatrixFunc[TokeTypes.tokMSub]=matrixSubNode
-    diccMatrixFunc[TokeTypes.tokMMul]=matrixMulNode
-    diccMatrixFunc[TokeTypes.tokMDiv]=matrixDivNode
+
 
