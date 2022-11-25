@@ -72,6 +72,7 @@ class TokeTypes(enum.Enum):
 
     tokID = enum.auto()  # -------
 
+    
     tokModify = enum.auto()  # $Modify    -------
     tokCreate = enum.auto()  # $Create       --------
     tokDie = enum.auto()  # $Die     -------
@@ -97,6 +98,7 @@ class TokeTypes(enum.Enum):
 
     tokInsert = enum.auto()
     tokDelete = enum.auto()
+    tokOverride = enum.auto()
 
 
 keywordsDicc = {
@@ -104,6 +106,8 @@ keywordsDicc = {
     "if": TokeTypes.tokIf,
     "elif": TokeTypes.tokElif,
     "else": TokeTypes.tokElse,
+    
+    "override":TokeTypes.tokOverride,
 
     # declaracion
     "let": TokeTypes.tokLet,
