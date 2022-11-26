@@ -28,8 +28,8 @@ class ClassNode():
 class Context():
     def __init__(self,name,classNode,fatherContext=None,breakCheck=False):
         
-        self.diccVarContext : dict(str,ClassNode)= {}
-        self.diccFuncContext : dict(str,ClassNode)={} 
+        self.diccVarContext : dict(str,[str,type,ClassNode])= {}
+        self.diccFuncContext : dict(str,[str,[type],ClassNode])={} 
         self.fatherContext= fatherContext
         self.name=name
         self.breakCheck=breakCheck
@@ -69,10 +69,10 @@ class Context():
             return True
         return False
             
-    def define_func(self,var,typeList:list):
+    def define_func(self,var,typeList:list,node):
         if not self.checkVar(var,typeList):
             typeList.insert(0,var)
-            self.diccVarContext[var]=[var,typeList]
+            self.diccVarContext[var]=[var,typeList,node]
             return True
         return False
     
@@ -650,8 +650,7 @@ class BreakNode(ClassNode):
 class ProgramNode(ClassNode):
     def __init__(self):
         self.ListStatement = None
-        self.context = context
-
+        
         self.RT = None
         self.ET = None
 
@@ -672,6 +671,8 @@ class ProgramNode(ClassNode):
             
     #["override_expr"],["let_dec"],["func_dec"],["var_reasign"],["print_stat"],["condictional_stat"],["loop_stat"],["lenguage_funtion"],["break_exp"],["return_exp"],["continue_exp"],["epsilon"]
     def build_ast(self,productionList,context,indexProduc=[0]):
+        self.context = context
+
         indexProduc[0]=0
         self.ListStatement=[]
         self.buildPosible()
@@ -704,24 +705,50 @@ class ProgramNode(ClassNode):
         self.posibleProductions["if_stat"]=IfNode
         self.posibleProductions["loop_stat"]=LoopNode
         #["die"],["modify"],["evolve"],["add"],["move"],["eat"],["create"]
-        self.posibleProductions["die"]=DieNode
-        self.posibleProductions["modify"]=ModifyNode
-        self.posibleProductions["evolve"]=EvolveNode
-        self.posibleProductions["add"]=AddNode
-        self.posibleProductions["move"]=MoveNode
-        self.posibleProductions["eat"]=EatNode
-        self.posibleProductions["create"]=CreateNode
         
         self.posibleProductions["break_exp"]=BreakNode
         self.posibleProductions["return_exp"]=returnNode
-        self.posibleProductions["continue_exp"]=continueNode
+        self.posibleProductions["continue_exp"]=ContinueNode
     
     
+#listo
+class ContinueNode(ClassNode):
+    def init(self):
+        self.context = None
+        self.loop = None
+        self.loop_validate = False
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self):
+        self.loop.eval()
+
+    def transpilar(self):
+        return "continue"
+
+    def validateNode(self):
+        return self.loop_validate
+
+    def build_ast(self,productionList, context,indexProduc=[0]):
+        self.contex = context
+
+        contexttemp = context
+        while contexttemp == None:
+            name = contexttemp.name
+            classNode = contexttemp.classNode
+
+            if name == "loop":
+                self.loop_validate = True
+                self.loop = classNode
+                break
+
+            contexttemp = contexttemp.fatherContext
 
 
-
+#listo
 class BreakNode(ClassNode):
-    def __init__(self, context):
+    def init(self, context):
         self.context = context
         self.RT = None
         self.ET = None
@@ -743,6 +770,9 @@ class BreakNode(ClassNode):
             if name == "loop":
                 if breakCheck == False:
                     context.breakCheck = True
+                    classNode.breakref = self
+                    return True
+                elif classNode.breakref == self:
                     return True
 
             if contexttemp.fatherContext == None:
@@ -756,6 +786,26 @@ class BreakNode(ClassNode):
         indexProduc[0]+=1
         #esto hay que implementarlo ya que el el break al crease solo guarda a su hijo como el nodo loop mas cercano
         #esto seria buscar en el contexto
+
+        contexttemp = self.context
+        
+        while True:
+            name = contexttemp.name
+            breakCheck = contexttemp.breakCheck
+            classNode = contexttemp.classNode
+
+            if name == "loop":
+                if breakCheck == False:
+                    self.context.breakCheck = True
+                    classNode.breakref = self
+                    break
+                elif classNode.breakref == self:
+                    break
+
+            if contexttemp.fatherContext == None:
+                break
+
+            contexttemp = contexttemp.fatherContext
 
 #listo
 class LetNode(ClassNode):
@@ -832,7 +882,7 @@ class OverrideNode(ClassNode):
         except:
             self.dont_exist=True
 
-
+#listo
 class ReasignNode(ClassNode):
     def init(self):
         self.idnode = None
@@ -1093,8 +1143,9 @@ class elseNode(ClassNode):
         indexProduc[0]+=1
         self.body = ProgramNode()
         self.body.build_ast(productionList, self.newcontext, indexProduc)
+
         
-        
+#ffffffff       
 #listo
 class IdNode(ClassNode):
     def __init__(self):
@@ -1121,8 +1172,7 @@ class IdNode(ClassNode):
         self.funcOrVar=funcOrVar
         self.defineOrCall=defineOrCall
         
-   
-# Faltantes
+
 
 class FucNode(ClassNode):
     def init(self,context):
@@ -1153,6 +1203,7 @@ class FucNode(ClassNode):
         argsss=eatArgList(productionList,indexProduc,self.context)
         self.argsid=argsss[1]
         self.argstypes=argsss[0]
+        
         indexProduc[0]+=2
         self.RT= eatType(productionList,indexProduc,context)
         indexProduc[0]+=1
@@ -1204,22 +1255,24 @@ class func_callNode(StatementNode):
         
         #indexProduc[0]+=1 #? esto va aqui?
         self.ListStatements = ProgramNode(productionList,indexProduc,self.context)
-    
-class PrintNode(StatementNode):
-    def __init__(self,context):
+
+#listo
+class PrintNode(ClassNode):
+    def __init__(self):
         self.name = "print"
         self.args = None
-        self.context = context
+        
 
         self.RT = None
         self.ET = None
 
     def Eval(self,context):
         val = self.args[0].Eval(self.context)
-        #print(val)
+        print(val)
         return
     
-    def build_ast(self,productionList,indexProduc):
+    def build_ast(self,context,productionList,indexProduc):
+        self.context = context
         indexProduc[0]+=1
         self.args = eatExpression(productionList,indexProduc,self.context)
         
