@@ -1,33 +1,9 @@
-from dataclasses import dataclass
-from distutils.log import error
-from itertools import chain
-from lib2to3.pytree import Node
-from multiprocessing import Condition, context
-from pickle import FALSE
-from platform import node
-from tokenize import Double
-
-from numpy import true_divide
-
 from comp_globals import TokeTypes 
-import enum
 
-class nodetypes(enum.Enum):
-    IdNode = enum.auto()
-    SumNode = enum.auto()
-    SubNode = enum.auto()
-    MulNode = enum.auto()
-    DivNode = enum.auto()
-    ModNode = enum.auto()
-    PowNode = enum.auto()
-    VectorialNode = enum.auto()
-    NumberNode = enum.auto()
-    ChainNode = enum.auto()
-    TrueNode = enum.auto()
-    FalseNode = enum.auto()
-    NoneNode = enum.auto()
 
-@dataclass
+
+    
+#-----------------------   
 class ClassNode():
     
 
@@ -45,36 +21,10 @@ class ClassNode():
 
     def build_ast(productionList):
         pass
-
-class OperatorNode(ClassNode):
-    def Eval(self,context):
-        pass
     
-    def validateNode(self,context):
-        pass
 
-    def transpilar(self):
-        pass
-    
-    def checkTypes(self):
-        pass
 
-    def build_ast(productionList,indexPro):
-        pass
-
-class CompareNode(ClassNode):
-    def Eval(self,context):
-        pass
-    
-    def validateNode(self,context):
-        pass
-    
-    def transpilar(self):
-        pass
-
-    def build_ast(self,productionList,indexProduc):
-        pass
-
+#-----------------------
 class Context():
     def __init__(self,name,classNode,fatherContext=None,breakCheck=False):
         
@@ -166,12 +116,12 @@ class Context():
 
 
 
-
 #--------------------------------------------------------------------------- #
 #-------------------------- Nodos Operadores ------------------------------- #
 #--------------------------------------------------------------------------- #
 
-@dataclass
+
+#LISTO
 class SumNode(OperatorNode):
     def __init__(self,context):
         self.Left=None
@@ -195,13 +145,13 @@ class SumNode(OperatorNode):
     def validateNode(self,context):
         valid= self.Left.validateNode(context) and self.Right.validateNode(context)
         
-    def build_ast(self,productionList,indeProduc):
+    def build_ast(self,productionList,indeProduc,context):
         self.Left=eatTerm(productionList,indeProduc,context)
         self.Right=eatExpression(productionList,indeProduc,context)
         self.RT=self.Left.RT
         self.ET=self.Right.ET
         
-
+#listo
 class SubNode(OperatorNode):
     def __init__(self,context):
         self.Left=None
@@ -224,13 +174,13 @@ class SubNode(OperatorNode):
     def transpilar(self):
         return str(self.Left) + " - " +  str(self.Right)
 
-    def build_ast(self,productionList,indeProduc):
+    def build_ast(self,productionList,indeProduc,context):
         self.Left=eatTerm(productionList,indeProduc,context)
         self.Right=eatExpression(productionList,indeProduc,context)
         self.RT=self.Left.RT
         self.ET=self.Right.ET
     
-
+#listo
 class MulNode(OperatorNode):
     def __init__(self,context):
         self.Left=None
@@ -250,12 +200,13 @@ class MulNode(OperatorNode):
     def transpilar(self):
         return str(self.Left) + " * " +  str(self.Right)
 
-    def build_ast(self,productionList,indeProduc):
+    def build_ast(self,productionList,indeProduc,context):
         self.Left=eatFactor(productionList,indeProduc,context)
         self.Right=eatTerm(productionList,indeProduc,context)
         self.RT=self.Left.RT
         self.ET=self.Right.ET
-    
+
+#listo    
 class DivNode(OperatorNode):
     def __init__(self,context):
         self.Left=None
@@ -278,12 +229,12 @@ class DivNode(OperatorNode):
     def transpilar(self):
         return str(self.Left) + " / " +  str(self.Right)
     
-    def build_ast(self,productionList,indeProduc):
+    def build_ast(self,productionList,indeProduc,context):
         self.Left=eatFactor(productionList,indeProduc,context)
         self.Right=eatTerm(productionList,indeProduc,context)
         self.RT=self.Left.RT
         self.ET=self.Right.ET
-
+#listo
 class ModNode(OperatorNode):
     def __init__(self,context):
         self.Left=None
@@ -303,12 +254,13 @@ class ModNode(OperatorNode):
     def transpilar(self):
         return str(self.Left) + " % " +  str(self.Right)
 
-    def build_ast(self,productionList,indeProduc):
+    def build_ast(self,productionList,indeProduc,context):
         self.Left=eatFactor(productionList,indeProduc,context)
         self.Right=eatTerm(productionList,indeProduc,context)
         self.RT=self.Left.RT
         self.ET=self.Right.ET
-
+        
+#listo
 class PowNode(OperatorNode):
     def __init__(self,context):
         self.Left=None
@@ -338,12 +290,11 @@ class PowNode(OperatorNode):
 #-----------------------Comparer Oper -------------------------------------- #
 #--------------------------------------------------------------------------- #
 
-
+#listo
 class EqualNode(CompareNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
-        self.context=context
 
         self.RT = None
         self.ET = None
@@ -363,18 +314,17 @@ class EqualNode(CompareNode):
     def transpilar(self):
         return str(self.Left) + " == " +  str(self.Right)
 
-    def build_ast(self,productionList,indeProduc):
+    def build_ast(self,productionList,indeProduc,context):
         self.Left=eatTerm(productionList,indeProduc,context)
         self.Right=eatExpression(productionList,indeProduc,context)
         self.RT=self.Left.RT
         self.ET=self.Right.ET
     
-    
+#listo    
 class NotEqualNode(CompareNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
-        self.context=context
 
         self.RT = None
         self.ET = None
@@ -393,18 +343,17 @@ class NotEqualNode(CompareNode):
         return str(self.Left) + " != " +  str(self.Right)
 
 
-    def build_ast(self,productionList,indeProduc):
+    def build_ast(self,productionList,indeProduc,context):
         self.Left=eatTerm(productionList,indeProduc,context)
         self.Right=eatExpression(productionList,indeProduc,context)
         self.RT=self.Left.RT
         self.ET=self.Right.ET
 
-    
+#listo    
 class LoENode(CompareNode):
-    def __init__(self,context):
+    def __init__(self):
         self.Left=None
         self.Right=None
-        self.context=context
     
         self.RT = None
         self.ET = None
@@ -424,18 +373,17 @@ class LoENode(CompareNode):
     def transpilar(self):
         return str(self.Left) + " <= " +  str(self.Right)
 
-    def build_ast(self,productionList,indeProduc):
+    def build_ast(self,productionList,indeProduc,context):
         self.Left=eatTerm(productionList,indeProduc,context)
         self.Right=eatExpression(productionList,indeProduc,context)
         self.RT=self.Left.RT
         self.ET=self.Right.ET
 
-
+#listo
 class GoENode(CompareNode):
-    def __init__(self,context):
+    def __init__(self):
         self.Left=None
         self.Right=None
-        self.context=context
 
         self.RT = None
         self.ET = None
@@ -455,18 +403,17 @@ class GoENode(CompareNode):
     def transpilar(self):
         return str(self.Left) + " >= " +  str(self.Right)
 
-    def build_ast(self,productionList,indeProduc):
+    def build_ast(self,productionList,indeProduc,context):
         self.Left=eatTerm(productionList,indeProduc,context)
         self.Right=eatExpression(productionList,indeProduc,context)
         self.RT=self.Left.RT
         self.ET=self.Right.ET
 
-
+#listo
 class GreaterNode(CompareNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
-        self.context=context
     
         self.RT = None
         self.ET = None
@@ -486,13 +433,13 @@ class GreaterNode(CompareNode):
     def transpilar(self):
         return str(self.Left) + " > " +  str(self.Right)
 
-    def build_ast(self,productionList,indeProduc):
+    def build_ast(self,productionList,indeProduc,context):
         self.Left=eatTerm(productionList,indeProduc,context)
         self.Right=eatExpression(productionList,indeProduc,context)
         self.RT=self.Left.RT
         self.ET=self.Right.ET
 
-
+#listo
 class LessNode(CompareNode):
     def __init__(self,context):
         self.Left=None
@@ -517,19 +464,18 @@ class LessNode(CompareNode):
     def transpilar(self):
         return str(self.Left) + " < " +  str(self.Right)
 
-    def build_ast(self,productionList,indeProduc):
+    def build_ast(self,productionList,indeProduc,context):
         self.Left=eatTerm(productionList,indeProduc,context)
         self.Right=eatExpression(productionList,indeProduc,context)
         self.RT=self.Left.RT
         self.ET=self.Right.ET
 
     
-
 #--------------------------------------------------------------------------- #
 #--------------------------Condicional ------------------------------------- #
 #--------------------------------------------------------------------------- #
 
-    
+#listo    
 class AndNode(ClassNode):
     def __init__(self,context):
         self.Left=None
@@ -554,13 +500,13 @@ class AndNode(ClassNode):
     def transpilar(self):
         return str(self.Left) + " and " +  str(self.Right)
 
-    def build_ast(self,productionList,indeProduc):
+    def build_ast(self,productionList,indeProduc,context):
         self.Left=eatTerm(productionList,indeProduc,context)
         self.Right=eatExpression(productionList,indeProduc,context)
         self.RT=self.Left.RT
         self.ET=self.Right.ET
 
-
+#listo
 class OrNode(ClassNode):
     def __init__(self,context):
         self.Left=None
@@ -583,7 +529,7 @@ class OrNode(ClassNode):
     def validateNode(self,context):
         valid= self.Left.validateNode(context) or self.Right.validateNode(context)
         
-    def build_ast(self,productionList,indeProduc):
+    def build_ast(self,productionList,indeProduc,context):
         self.Left=eatTerm(productionList,indeProduc,context)
         self.Right=eatExpression(productionList,indeProduc,context)
         self.RT=self.Left.RT
@@ -593,12 +539,14 @@ class OrNode(ClassNode):
 # -------------------------------------------------------------------------
 # Ciclos ------------------------------------------------------------------
 # -------------------------------------------------------------------------
-
+#listo
 class LoopNode(ClassNode):
-    def __init__(self,context:Context):
+    def init(self,context:Context):
         self.Conditional=None
         self.Body=None
+        self.breakref=None
         self.context=context
+        self.newContext=None
     
         self.RT = None
         self.ET = None
@@ -609,8 +557,8 @@ class LoopNode(ClassNode):
     
     def Eval(self):
         while (self.Left.Eval()):
-            newContext=self.context.create_hild("loop",self)
-            self.Body.Eval(newContext)
+            
+            self.Body.Eval(self.newContext)
             
     def transpilar(self):
         textcode = ""
@@ -631,254 +579,76 @@ class LoopNode(ClassNode):
         node.build_ast(productionList,indexProduc)
         self.Conditional=node
         
-        newcontext=self.context.create_hild("loop",self)
-        node=ProgramNode(newcontext)
-        node.build_ast(productionList,indexProduc)
+        self.newcontext=self.context.create_hild("loop",self)
+        node=ProgramNode()
+        node.build_ast(productionList,self.newcontext,indexProduc)
         self.Body=node
-
-
-#--------------------------------------------------------------------------- #
-#--------------------------Func Program ------------------------------------ #
-#--------------------------------------------------------------------------- #
-
-
-class ModifyNode(ClassNode):
-    def __init__(self,context):
-        self.leng_Type = None
-        self.args = None
+#listo
+class BreakNode(ClassNode):
+    def init(self, context):
         self.context = context
-    
         self.RT = None
         self.ET = None
 
-    def Eval(self,context):
-        valid= self.leng_Type.validateNode(context) 
-        for item in self.args:
-            item.validateNode(context)
-        
-        
-    def validateNode(self,context):
-        valid= self.leng_Type.validateNode(context) 
-        for item in self.args:
-            self.Right.validateNode(context)
+
+    def Eval(self, context):
+        return
 
     def transpilar(self):
-        textcode = ""
-        textcode += "modify("
-        i = 0
-        for arg in self.args:
-            textcode += arg.transpilar()
-            i+=1
-            if i < len(self.args) - 1:
-                textcode += ","
-        
-        textcode += ")"
+        return "break"
+    
+    def validateNode(self):
+        contexttemp = self.context
+        while True:
+            name = contexttemp.name
+            breakCheck = contexttemp.breakCheck
+            classNode = contexttemp.classNode
 
-        return textcode
-        
-    def build_ast(self,productionList):
-        pass
+            if name == "loop":
+                if breakCheck == False:
+                    self.context.breakCheck = True
+                    classNode.breakref = self
+                    return True
+                elif classNode.breakref == self:
+                    return True
 
-#----------------------------------------------------------------
-#--------------------------------------------------------------
-#------------------------------------------------------------------
-class CreateNode(ClassNode):
-    def __init__(self,context):
-        self.leng_Type = None
-        self.args = None
+            if contexttemp.fatherContext == None:
+                break
+
+            contexttemp = contexttemp.fatherContext
+
+        return False
+
+    def build_ast(self,productionList,indexProduc,context):
+        indexProduc[0]+=1
+        #esto hay que implementarlo ya que el el break al crease solo guarda a su hijo como el nodo loop mas cercano
+        #esto seria buscar en el contexto
         self.context = context
+        contexttemp = self.context
         
-        self.RT = None
-        self.ET = None
+        while True:
+            name = contexttemp.name
+            breakCheck = contexttemp.breakCheck
+            classNode = contexttemp.classNode
 
-    def validateNode(self,context):
-        valid= self.leng_Type.validateNode(context) 
-        for item in self.args:
-            item.validateNode(context)
+            if name == "loop":
+                if breakCheck == False:
+                    contexttemp.breakCheck = True
+                    classNode.breakref = self
+                    break
+                elif classNode.breakref == self:
+                    break
 
+            if contexttemp.fatherContext == None:
+                break
 
-    def transpilar(self):
-        textcode = ""
-        textcode += "create("
-        i = 0
-        for arg in self.args:
-            textcode += arg.transpilar()
-            i+=1
-            if i < len(self.args) - 1:
-                textcode += ","
-        
-        textcode += ")"
-
-        return textcode
-
-    def Eval(self):
-        pass
-
-#---------------------------------------------------------------
-#---------------------------------------------------------------
-#---------------------------------------------------------------
-
-class DieNode(ClassNode):
-    def __init__(self,context):
-        self.leng_Type = None
-        self.args = None
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def validateNode(self,context):
-        valid= self.leng_Type.validateNode(context) 
-        for item in self.args:
-            item.validateNode(context)
-    
-    def transpilar(self):
-        textcode = ""
-        textcode += "Die("
-        i = 0
-        for arg in self.args:
-            textcode += arg.transpilar()
-            i+=1
-            if i < len(self.args) - 1:
-                textcode += ","
-        
-        textcode += ")"
-
-        return textcode
-    
-    def Eval(self,context):
-        pass
-    
-
-class EvolveNode(ClassNode):
-    def __init__(self,context):
-        self.leng_Type = None
-        self.args = None
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def validateNode(self,context):
-        valid= self.leng_Type.validateNode(context) 
-        for item in self.args:
-            item.validateNode(context)
-    
-    def transpilar(self):
-        textcode = ""
-        textcode += "Evolve("
-        i = 0
-        for arg in self.args:
-            textcode += arg.transpilar()
-            i+=1
-            if i < len(self.args) - 1:
-                textcode += ","
-        
-        textcode += ")"
-
-        return textcode
-
-    def Eval(self,context):
-        pass
-
-class AddNode(ClassNode):
-    def __init__(self,context):
-        self.leng_Type = None
-        self.args = None
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def validateNode(self,context):
-        valid= self.leng_Type.validateNode(context) 
-        for item in self.args:
-            item.validateNode(context)
-    
-    def transpilar(self):
-        textcode = ""
-        textcode += "Add("
-        i = 0
-        for arg in self.args:
-            textcode += arg.transpilar()
-            i+=1
-            if i < len(self.args) - 1:
-                textcode += ","
-        
-        textcode += ")"
-
-        return textcode
-
-    def Eval(self,context):
-        pass
-    
-class MoveNode(ClassNode):
-    def __init__(self,context):
-        self.leng_Type = None
-        self.args = None
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def validateNode(self,context):
-        valid= self.leng_Type.validateNode(context) 
-        for item in self.args:
-            item.validateNode(context)
-
-    def transpilar(self):
-        textcode = ""
-        textcode += "Move("
-        i = 0
-        for arg in self.args:
-            textcode += arg.transpilar()
-            i+=1
-            if i < len(self.args) - 1:
-                textcode += ","
-        
-        textcode += ")"
-
-        return textcode
-
-    def Eval():
-        pass
-    
-class EatNode(ClassNode):
-    def __init__(self,context):
-        self.leng_Type = None
-        self.args = None
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def validateNode(self,context):
-        valid= self.leng_Type.validateNode(context) 
-        for item in self.args:
-            item.validateNode(context)
-    
-    def transpilar(self):
-        textcode = ""
-        textcode += "transpilar("
-        i = 0
-        for arg in self.args:
-            textcode += arg.transpilar()
-            i+=1
-            if i < len(self.args) - 1:
-                textcode += ","
-        
-        textcode += ")"
-
-        return textcode
-
-    def Eval(self,context):
-        pass
+            contexttemp = contexttemp.fatherContext
 
 
 #-------------------------- Modificar----------------------------------
-
+#listo
 class ProgramNode(ClassNode):
-    def __init__(self,context):
+    def __init__(self):
         self.ListStatement = None
         self.context = context
 
@@ -901,7 +671,7 @@ class ProgramNode(ClassNode):
                 return False
             
     #["override_expr"],["let_dec"],["func_dec"],["var_reasign"],["print_stat"],["condictional_stat"],["loop_stat"],["lenguage_funtion"],["break_exp"],["return_exp"],["continue_exp"],["epsilon"]
-    def build_ast(self,productionList,indexProduc=[0]):
+    def build_ast(self,productionList,context,indexProduc=[0]):
         indexProduc[0]=0
         self.ListStatement=[]
         self.buildPosible()
@@ -911,12 +681,13 @@ class ProgramNode(ClassNode):
             if productionList[indexProduc].components[0]==TokeTypes.tokClosedBracket:
                 break
             indexProduc[0]+=1
+            #esto se come ciertas producciones
             if head in self.posibleProductions:
                 
                 #arreglar esto
                 node=self.posibleProductions[head]()
                 #resolver el nodo
-                node.build_ast(productionList,indexProduc)
+                node.build_ast(productionList,indexProduc,self.contex)
                 #agregarlo a los hijos
                 self.ListStatement.append(node)
                 
@@ -946,27 +717,10 @@ class ProgramNode(ClassNode):
         self.posibleProductions["continue_exp"]=continueNode
     
     
-class StatementNode(ClassNode):
-    def __init__(self,context):
-        self.actionNode = None
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def Eval(self,context):
-        self.actionNode.Eval(self.context)
-
-    def transpilar(self):
-        return self.actionNode.transpilar()
-
-    
-    def validateNode(self, context):
-        if not self.actionNode.validateNode(context):
-            return False
 
 
-class BreakNode(StatementNode):
+
+class BreakNode(ClassNode):
     def __init__(self, context):
         self.context = context
         self.RT = None
@@ -1003,13 +757,13 @@ class BreakNode(StatementNode):
         #esto hay que implementarlo ya que el el break al crease solo guarda a su hijo como el nodo loop mas cercano
         #esto seria buscar en el contexto
 
-
-class LetNode(StatementNode):
-    def __init__(self, context):
+#listo
+class LetNode(ClassNode):
+    def __init__(self):
         self.type = None
         self.idnode = None
         self.val = None
-        self.context = context
+        
 
         self.RT = None
         self.ET = None
@@ -1018,41 +772,138 @@ class LetNode(StatementNode):
         return
     
     def validateNode(self, context):
-        if not self.idnode is IdNode or not valNode(self.val):
+        if not (self.idnode is IdNode) :
             return False
 
         validate = self.idnode.validateNode(context) and self.val.validateNode(context)
         return validate
 
     def transpilar(self):
+        return "Let " + str(self.type) + " " + str(self.idnode) + " = " + self.val.transpilar()
+    
+    def build_ast(self,productionList,indexProduc,context):
+        self.context = context
+        #agregado el tipo "sale como token todavia no es grave"
+        value=productionList[indexProduc[0]].components[1].value
+        indexProduc[0]+=2
+        self.type =eatType(productionList,indexProduc,context)
+        #creando id
+        idn=IdNode()
+        #self,id,funcOrVar,defineOrCall,valType=None
+        idn.build_ast(self.context,value,"var","define",self.type)
+        
+        self.idnode = idn
+        #self.ET=self.idnode.RT
+        indexProduc[0]+=1
+        self.val=eatExpression(productionList,indexProduc,context)
+        #self.RT=self.val.RT
+        #guardar el el contexto el par como variable-valor/ varibale-funcion 
+        self.context.define_var(idn, self.type, self.val)
+
+#listo
+class OverrideNode(ClassNode):
+    def __init__(self):
+        self.id1 = None
+        self.id2 = None
+        self.dont_exist=False
+
+
+    def Eval(self):
+        pass
+    
+    def validateNode(self, context):
+        if self.dont_exist:
+            return False
+
+        return True
+
+    def transpilar(self):
         return "Let " + str(self.type) + " " + str(self.idnode) + " = " + self.val
     
-    def build_ast(self,productionList,indexProduc):
-        
+    def build_ast(self,productionList,indexProduc,context):
+        self.context = context
         #agregado el tipo "sale como token todavia no es grave"
-        self.type = productionList[indexProduc][0].components[1]
+        args =eatArgList(productionList,indexProduc,context)
+        #creando id
+        self.id1=args[0]
+        self.id2=args[1]
+        try :
+            self.context.diccFuncContext[self.id1.id]=self.context.diccFuncContext[self.id2.id]
+        except:
+            self.dont_exist=True
+
+
+class ReasignNode(ClassNode):
+    def init(self):
+        self.idnode = None
+        self.val = None
+        self.dont_exit = True
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self):
+        self.context.redeclareVar(self.idnode, type(self.val) , self.val)
+    
+    def validateNode(self):
+        if not self.idnode is IdNode:
+            return False
+
+        validate = self.idnode.validateNode(self.context) and self.val.validateNode(self.context)
+        if not validate:
+            return False
+
+        return not self.dont_exit
+
+    def transpilar(self):
+        return str(self.idnode) + " = " + self.val.transpilar()
+    
+    def build_ast(self,productionList, context ,indexProduc):
+        
+        self.context = context
+
         #creando id
         idn=IdNode(self.context)
         #self,id,funcOrVar,defineOrCall,valType=None
-        idn.build_ast(productionList[indexProduc][0].components[1].value,"var","define",self.type)
-        
+        idn.build_ast(productionList[indexProduc[0]].components[1].head,"var","define",self.type)
         self.idnode = idn
-        self.ET=self.idnode.RT
+
+        #self.ET=self.idnode.RT
         indexProduc[0]+=1
         self.val=eatExpression(productionList,indexProduc,context)
-        self.RT=self.val.RT
+        #self.RT=self.val.RT
+
+        ref = self.context.retVar(idn.name)
+
+        if ref != None:
+            self.dont_exit = False
+
+            
+
     
-# Revisar como crearlo
+expresionDicc={}
+def fillExpresion():
+    expresionDicc[TokeTypes.tokSub]=SumNode
+    expresionDicc[TokeTypes.tokSum]=SubNode
+    
+termDicc={}
+def fillTerm():
+    termDicc[TokeTypes.tokMul]=MulNode
+    termDicc[TokeTypes.tokDiv]=DivNode
+    termDicc[TokeTypes.tokDiv]=DivNode
+
+def eatType(productionList,indexProduc,context):
+    return productionList[indexProduc[0]].components[0]
 
 def eatExpression(productionList,indexProduc,context):
-    if len(productionList[indexProduc][0].components)==3:
-        component=productionList[indexProduc][0][1]
+    if len(productionList[indexProduc[0]].components)==3:
+        component=productionList[indexProduc[0]][1]
         if component in expresionDicc:
             #creamos el node
-            node =expresionDicc[component](context)
+            node =expresionDicc[component]()
             
             indexProduc[0]+=1
-            node.build_ast(productionList,indexProduc)
+            node.build_ast(productionList,indexProduc,context)
             return node
         elif component=="comparer":
             indexProduc[0]+=1
@@ -1071,7 +922,7 @@ def eatComparer(productionList,indexProduc,context):
     return node
 
 def eatFactor(productionList,indexProduc,context):
-    component=productionList[indexProduc][0][1]
+    component=productionList[indexProduc[0]][1]
     if component==productionList[indexProduc][0][0]==TokeTypes.tokOpenParen:
             indexProduc[0]+=1
             return eatExpression(productionList,indexProduc,context)
@@ -1082,13 +933,13 @@ def eatFactor(productionList,indexProduc,context):
     
 def eatTerm(productionList,indexProduc,context):
     if len(productionList[indexProduc][0].components)==3:
-        component=productionList[indexProduc][0][1]    
+        component=productionList[indexProduc[0]][1]    
         if component in termDicc:
             #creamos el node
-            node =expresionDicc[component](context)
+            node =expresionDicc[component]()
             
             indexProduc[0]+=1
-            node.build_ast(productionList,indexProduc)
+            node.build_ast(productionList,indexProduc,context)
             return node
         else:
             indexProduc[0]+=1
@@ -1100,7 +951,7 @@ def eatAtom(productionList,indexProduc,context):
     component=productionList[indexProduc][0][0]
     if component in termDicc:
         #buscando cual atomo es
-        node =expresionDicc[component](context)
+        node =expresionDicc[component]()
 
         indexProduc[0]+=1
         node.build_ast(productionList,indexProduc)
@@ -1134,196 +985,146 @@ def eatDiccFunc(productionList,indexProduc,context):
     node.build_ast(productionList,indexProduc,context)
     return node
     
-class Condictional_statNode(StatementNode):
-    def __init__(self,context):
+
+#listo
+class IfNode(ClassNode):
+    def init(self):
         self.condition = None
-        self.context = context
+        self.body = None
+        self.elsenode = None
+
 
         self.RT = None
         self.ET = None
 
-    def Eval(self,context):
-        return self.condition.Eval()
-
-    def transpilar(self):
-        textcode = ""
-        textcode += self.condition.tranpilar()
-        return textcode
-
-    def validateNode(self, context):
-        return self.validateNode(self.condition)
-
-class IfNode(StatementNode):
-    def __init__(self,context):
-        self.condition = None
-        self.ListStatements = None
-        #self.elsenode = None
-        #self.elifnode = None
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def Eval(self,context):
+    def Eval(self):
         if self.condition.Eval(self.context):
-            for statement in self.ListStatements:
-                statement.Eval(self.context)
+            self.body.Eval()
 
         else:
             self.elsenode.Eval()
-        
-        if self.elifnode != None:
-            self.elifnode.Eval()
     
     def transpilar(self):
         textcode = ""
         textcode += "if "
         textcode += self.condition.transpilar()
         textcode += ":"
-        for statement in self.ListStatements:
-            textcode += "\n \t"
-            textcode += statement.transpilar
         
+        textcode += "\n\t"
+
+        self.body.transpilar()
+
         textcode += "\n"
         textcode += self.elsenode.transpilar()
-
-        if self.elifnode != None:
-            textcode += "\n"
-            textcode += self.elifnode.transpilar()
 
         return textcode
 
 
-    def validateNode(self, context):
-        validate1 = self.condition.validateNode(self.context)
+    def validateNode(self):
+        validate1 = self.condition.validateNode()
         if not validate1:
             return False
-        for statement in self.ListStatements:
-            if not statement.validateNode(self.context):
-                return False
-
-        validate2 = self.elsenode.validateNode(self.context)
+        
+        validate2 = self.body.validateNode()
         if not validate2:
             return False
 
-        if self.elifnode != None:
-            validate3 = self.elifnode.validateNode(self.context)
-            if not validate3:
-                return False
+        validate3 = self.elsenode.validateNode(self.context)
+        if not validate3:
+            return False
 
         return True
     
-    def build_ast(self,productionList,indexProduc):
-        
-        
+    def build_ast(self,productionList, context,indexProduc=[0]):
+        self.context = context
+
         indexProduc[0]+=1
         self.condition = eatExpression(productionList,indexProduc,self.context)
         
-        #indexProduc[0]+=1 #? esto va aqui?
-        self.ListStatements = ProgramNode(productionList,indexProduc,self.context)
+        indexProduc[0]+=1 #? esto va aqui?
+        self.newcontext=self.context.create_hild("if",self)
+        self.body = ProgramNode()
+        self.body.build_ast(productionList,indexProduc,self.newcontext)
 
-
-
-class ElifNode(StatementNode):
-    def __init__(self,context):
-        self.condition = None
-        self.ListStatements = None
-        self.elsenode = None
-        self.elifnode = None
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def Eval(self,context):
-        if self.condition.Eval(self.context):
-            for statement in self.ListStatements:
-                statement.Eval(self.context)
-
-        else:
-            self.elsenode.Eval()
+        #indexProduc[0]+=1
+        head = productionList[indexProduc[0]+1].head
         
-        if self.elifnode != None:
-            self.elifnode.Eval()
-    
-    def transpilar(self):
-        textcode = ""
-        textcode += "elif "
-        textcode += self.condition.transpilar()
-        textcode += ":"
-        for statement in self.ListStatements:
-            textcode += "\n \t"
-            textcode += statement.transpilar
         
-        textcode += "\n"
-        textcode += self.elsenode.transpilar()
+        
+        if head.name == "else":
+            indexProduc[0]+=1
+            self.elsenode = elseNode()
 
-        if self.elifnode != None:
-            textcode += "\n"
-            textcode += self.elifnode.transpilar()
+            self.elsenode.build_ast(productionList, self.context.fatherContext ,indexProduc)
 
-        return textcode
-
-    def validateNode(self, context):
-        validate1 = self.condition.validateNode(self.context)
-        if not validate1:
-            return False
-        for statement in self.ListStatements:
-            if not statement.validateNode(self.context):
-                return False
-
-        validate2 = self.elsenode.validateNode(self.context)
-        if not validate2:
-            return False
-
-        if self.elifnode != None:
-            validate3 = self.elifnode.validateNode(self.context)
-            if not validate3:
-                return False
-
-        return True
-
-
-# Preguntar
-class elseNode(StatementNode):
-    def __init__(self,context):
-        self.ListStatement = None
+#listo
+class elseNode(ClassNode):
+    def init(self):
+        #self.ifnode = None
+        self.body = None
         
         self.RT = None
         self.ET = None
 
 
-    def Eval(self,context):
-        for statement in self.ListStatement:
-            statement.Eval(self.context)
+    def Eval(self):
+        self.ProgramNode.Eval()
 
     def transpilar(self):
         textcode = ""
         textcode += "else:"
         textcode += "\n"
         
-        for statement in self.ListStatements:
-            textcode += "\n \t"
-            textcode += statement.transpilar
-        
+        self.body.transpilar()
+
         return textcode
 
 
-    def validateNode(self, context):
-        if not self.context.name == "if" and not self.context.name == "elif":
+    def validateNode(self):
+        if not self.context.name == "if":
             return False
 
-        for statement in self.ListStatement:
-            validate = statement.validateNode(self.context)
-            if not validate:
-                return False
-            
-        return True
+        return self.body.validateNode()
 
+    def build_ast(self, productionList, context, indexProduc=[0]):
+        self.context = context
 
+        self.newcontext=self.context.create_hild("else",self)
+        indexProduc[0]+=1
+        self.body = ProgramNode()
+        self.body.build_ast(productionList, self.newcontext, indexProduc)
+        
+        
+#listo
+class IdNode(ClassNode):
+    def __init__(self):
+        self.id = None
+        
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self):
+        return self.id
+
+    def transpilar(self):
+        return str(self.id)
+
+    def validateNode(self, context):
+        return self.id is str
+    
+    #primer termino                                              "valor"
+    def build_ast(self,context,id,funcOrVar,defineOrCall,valType="referencia"):
+        self.id=id
+        self.context = context
+        self.RT=valType
+        self.funcOrVar=funcOrVar
+        self.defineOrCall=defineOrCall
+        
+   
 # Faltantes
 
-class FucNode(StatementNode):
+class FucNode(ClassNode):
     def init(self,context):
         self.argstypes = None
         self.argsid = None
@@ -1338,8 +1139,9 @@ class FucNode(StatementNode):
         return self.Left + self.Right
     
     
-    def build_ast(self,productionList,indexProduc):
-        
+    def build_ast(self,productionList,indexProduc,context):
+        self.context=context
+
         #creando id
         idn=IdNode(self.context)
         #self,id,funcOrVar,defineOrCall,valType=None
@@ -1348,7 +1150,7 @@ class FucNode(StatementNode):
         self.idnode = idn
         #esta parte busca los parametros 
         indexProduc[0]+=1
-        argsss=eatArgList(productionList,indexProduc,context)
+        argsss=eatArgList(productionList,indexProduc,self.context)
         self.argsid=argsss[1]
         self.argstypes=argsss[0]
         indexProduc[0]+=2
@@ -1361,13 +1163,17 @@ class FucNode(StatementNode):
         
         
 def eatArgList(productionList,indexProduc,context):
-    resultTypes=[]
+    
     resultId=[]
-    while productionList[indexProduc][1].head!="args_list" or productionList[indexProduc][1].head!="args_list_fix":
-        resultId.append(productionList[indexProduc][1].components[1]) 
-        indexProduc[0]+=2
-        resultTypes.append(eatType(productionList,indexProduc))
-    return (resultTypes,resultId)
+    while 1:
+        if productionList[indexProduc][1].head=="args_list":
+            indexProduc[0]+=1
+            resultId.append(eatExpression(productionList,indexProduc,context))
+        elif  productionList[indexProduc][1].head=="args_list_fix":
+            indexProduc[0]+=1
+            continue
+        else:
+            return resultId
 
 def eatType(productionList,indexProduc):
     return productionList[indexProduc][0].components[0]
@@ -1417,225 +1223,3 @@ class PrintNode(StatementNode):
         indexProduc[0]+=1
         self.args = eatExpression(productionList,indexProduc,self.context)
         
-
-
-# ------------------------------------------------------------------------------- #
-# ----------------------- Nodes Terminator -------------------------------------- #
-# ------------------------------------------------------------------------------- #
-
-class vectorialNode(StatementNode):
-    def __init__(self,context):
-        self.ejex = None
-        self.ejey = None
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def Eval(self,context):
-        return (self.ejex,self.ejey)
-    
-    def transpilar(self):
-        return "("+str(self.ejex) + "," +  str(self.ejey)+")"
-
-    def validateNode(self, context):
-        return isnumeric(self.ejex) and isnumeric(self.ejey)
-
-    
-class IdNode(StatementNode):
-    def __init__(self,context):
-        self.id = None
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def Eval(self):
-        return self.id
-
-    def transpilar(self):
-        return str(self.id)
-
-    def validateNode(self, context):
-        return self.id is str
-    
-    #primer termino 
-    def build_ast(self,id,funcOrVar,defineOrCall,valType="referencia"):
-        self.id=id
-        self.RT=valType
-        self.funcOrVar=funcOrVar
-        self.defineOrCall=defineOrCall
-        
-        
-
-class NumberNode(StatementNode):
-    def __init__(self,context):
-        self.val = None
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def Eval(self,context):
-        return self.val
-
-    def transpilar(self):
-        return str(self.val)
-
-    def validateNode(self, context):
-        return isnumeric(self.val)
-
-    def build_ast(self,value,valtype):
-        self.val=value
-        self.valtype=valtype
-        
-
-class ChainNode(StatementNode):
-    def __init__(self,context):
-        self.chain = None
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def Eval(self,context):
-        return chain
-
-    def transpilar(self):
-        return str(self.chain)
-
-    def validateNode(self, context):
-        return self.chain is str
-
-    def build_ast(self,value,valtype):
-        self.val=value
-        self.valtype=valtype
-
-    
-class TrueNode(StatementNode):
-    def __init__(self,context):
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def Eval(self):
-        return True
-
-    def transpilar(self):
-        return str(True)
-
-    def validateNode(self, context):
-        return True
-
-    def build_ast(self,value,valtype):
-        self.val=value
-        self.valtype=valtype
-
-class FalseNode(StatementNode):
-    def __init__(self,context):
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def Eval(self):
-        return False
-
-    def transpilar(self):
-        return str(False)
-
-    def validateNode(self, context):
-        return True
-    
-    def build_ast(self,value,valtype):
-        self.val=value
-        self.valtype=valtype
-
-class NoneNode(StatementNode):
-    def __init__(self,context):
-        self.context = context
-
-        self.RT = None
-        self.ET = None
-
-    def Eval(self, context):
-        return None
-
-    def transpilar(self):
-        return str(None)
-
-    def validateNode(self, context):
-        return True
-    
-    def build_ast(self,value,valtype):
-        self.val=value
-        self.valtype=valtype
-
-# ---------------------------------------------------------------------------------------------
-# ---------------------------------- Funciones de apoyo ---------------------------------------
-# ---------------------------------------------------------------------------------------------
-
-def isnumeric(num):
-    return num is Double or num is int or num is float
-
-
-def valNode(node):
-    if node is OperatorNode:
-        return True
-    
-    elif node is NumberNode:
-        return True
-
-    elif node is CompareNode:
-        return True
-
-    return False
-
-
-#-------------------------------------dics------------------------------------
-atomDicc={}
-#[TokeTypes.tokID],["func_call"],[TokeTypes.tokNumber],[TokeTypes.tokChain],[TokeTypes.tokNone],[TokeTypes.tokChain],[TokeTypes.tokTrue],[TokeTypes.tokFalse],["dic_func"],["epsilon"]
-def fillAtom():
-    atomDicc[TokeTypes.tokID]=IdNode
-    
-    atomDicc[TokeTypes.tokNumber]=NumberNode
-    atomDicc[TokeTypes.tokChain]=ChainNode
-    atomDicc[TokeTypes.tokNone]=NoneNode
-    atomDicc[TokeTypes.tokTrue]=TrueNode
-    atomDicc[TokeTypes.tokFalse]=FalseNode
-    #atomDicc["dic_dec"]=dic_func?
-    
-expresionDicc={}
-def fillExpresion():
-    expresionDicc[TokeTypes.tokSub]=FalseNode
-    expresionDicc[TokeTypes.tokSum]=FalseNode
-    
-termDicc={}
-def fillTerm():
-    termDicc[TokeTypes.tokMul]=FalseNode
-    termDicc[TokeTypes.tokDiv]=FalseNode
-
-#[TokeTypes.tokEqual],[TokeTypes.tokNot],[TokeTypes.tokNotEqual],[TokeTypes.tokGreaterOrEqual],[TokeTypes.tokGreater],[TokeTypes.tokLess],[TokeTypes.tokLessOrEqual],[TokeTypes.tokAnd],[TokeTypes.tokOr]
-comparerDicc={}
-def fillComparer():
-    comparerDicc[TokeTypes.tokEqual]=FalseNode
-    comparerDicc[TokeTypes.tokNot]=FalseNode
-    comparerDicc[TokeTypes.tokNotEqual]=FalseNode
-    comparerDicc[TokeTypes.tokGreaterOrEqual]=FalseNode
-    comparerDicc[TokeTypes.tokGreater]=FalseNode
-    comparerDicc[TokeTypes.tokLess]=FalseNode
-    comparerDicc[TokeTypes.tokLessOrEqual]=FalseNode
-    comparerDicc[TokeTypes.tokAnd]=FalseNode
-    comparerDicc[TokeTypes.tokOr]=FalseNode
-
-diccFunDicc={}
-def fillDiccFun():
-    diccFunDicc["search_dic"]=RecieveDiccNode
-    diccFunDicc["recieve_dic"]=SearchDiccNode
-    diccFunDicc["insert_dic"]=InsertDiccNode
-    diccFunDicc["dic_dec"]=DeclaretDiccNode
-    
-    
-
-

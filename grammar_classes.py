@@ -1,9 +1,8 @@
+import tokens 
 
 
 
 
-class TokenType():
-    diccType={}
     
     
 class Compenent:
@@ -23,7 +22,7 @@ class Compenent:
     
 class Terminal(Compenent):
     
-    def __init__(self, Name: str, TokenType : TokenType,value = None) -> None:
+    def __init__(self, Name: str, TokenType : tokens.TokenType,value = None) -> None:
         
         self.type = TokenType
         self.name = Name

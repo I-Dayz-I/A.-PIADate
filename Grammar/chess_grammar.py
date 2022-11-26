@@ -14,6 +14,7 @@ terminales = ["epsilon", TokeTypes.tokComma, TokeTypes.tokOpenSquareBracket, Tok
 
 productions = {
     # program
+    #listo 
     "program": [[TokeTypes.tokOpenBracket, "stat_list"]],
 
     # lista de statments
@@ -25,46 +26,57 @@ productions = {
 
     # statment
     "stat": [["override_expr"], ["let_dec"], ["func_dec"], ["var_reasign"], ["print_stat"], ["condictional_stat"], ["loop_stat"], ["lenguage_funtion"], ["break_exp"], ["return_exp"], ["continue_exp"], ["epsilon"]],
-
+    
+    #listo
     # statement cambia el la funcion de nombre el primer id por la del segundo id
     "override_expr": [TokeTypes.tokOverride, TokeTypes.tokOpenParen, "args_list",  TokeTypes.tokClosedParen],
 
+    #listo
     # reasignacion de variable
     "var_reasign": [TokeTypes.tokID, TokeTypes.tokAssign, "expr"],
-
+    
+    #falta
     # return expresion
     "return_exp": [[TokeTypes.tokReturn, "expr"]],
 
     # expresion continue
     "continue_exp": [[TokeTypes.tokContinue]],
 
+    #listo
     # expresion break
     "break_exp": [[TokeTypes.tokBreak]],
 
+    #listo
     # let declarator
     "let_dec": [[TokeTypes.tokLet, "all_types", TokeTypes.tokID, TokeTypes.tokAssign, "expr"]],
 
+    #listo
     # declarador de funciones
     "func_dec": [[TokeTypes.tokDef, TokeTypes.tokID, TokeTypes.tokOpenParen, "params_list", TokeTypes.tokClosedParen, TokeTypes.tokArrow, "all_types", TokeTypes.tokOpenBracket, "stat_list"]],
 
+    #listo
     # print statment
     "print_stat": [TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen],
 
     # condicionales
     "condictional_stat": [["if_stat"]],
 
+    #listo
     # if statment   (aca regla semantica para q exp sea bool)
     "if_stat": [[TokeTypes.tokIf, TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen, TokeTypes.tokOpenBracket, "stat_list","else_fix"]],
 
     # elif statment   (aca regla semantica para q exp sea bool)
     #"elif_stat": [[TokeTypes.tokElif, TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen, TokeTypes.tokOpenBracket, "stat_list"], ["epsilon"]],
     
+    
     #else_fix
     "else_fix":[["else_stat"],["epsilon"]],
-
+    
+    #listo
     # else statment
     "else_stat": [[TokeTypes.tokElse, TokeTypes.tokOpenBracket, "stat_list"], ["epsilon"]],
 
+    #listo
     # loop statment   (aca regla semantica para q exp sea bool) y añadir a expr Tokbreak, como usar el break se hara mediante los contextos al ponerle el nombre de un loop si es un loop quien lo llama
     "loop_stat": [[TokeTypes.tokLoop, TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen, TokeTypes.tokOpenBracket, "stat_list"]],
 
@@ -118,7 +130,7 @@ productions = {
     "factor": [["atom"], [TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen]],
 
     # atomos
-    "atom": [[TokeTypes.tokID], ["func_call"], [TokeTypes.tokNumber]   ,[TokeTypes.tokNone],[TokeTypes.tokNone], [TokeTypes.tokChain], [TokeTypes.tokTrue], [TokeTypes.tokFalse], ["epsilon"]],
+    "atom": [[TokeTypes.tokID], ["func_call"], [TokeTypes.tokNumber]   ,[TokeTypes.tokNone], [TokeTypes.tokChain], [TokeTypes.tokTrue], [TokeTypes.tokFalse],  ["epsilon"]],
 
     # comparadores
     "comparer": [[TokeTypes.tokEqual], [TokeTypes.tokNot], [TokeTypes.tokNotEqual], [TokeTypes.tokGreaterOrEqual], [TokeTypes.tokGreater], [TokeTypes.tokLess], [TokeTypes.tokLessOrEqual], [TokeTypes.tokAnd], [TokeTypes.tokOr]],
@@ -131,7 +143,7 @@ productions = {
     "dic_func": [["search_dic"], ["recieve_dic"], ["insert_dic"], ["dic_dec"]],
 
     # declaracion de diccionario
-    "dic_dec": [[TokeTypes.tokDicc, TokeTypes.tokOpenSquareBracket, "all_types", TokeTypes.tokComma, "all_types", TokeTypes.tokClosedSquareBracket]],
+    "dic_dec": [[TokeTypes.tokDicc, TokeTypes.tokID,TokeTypes.tokAssign, TokeTypes.tokOpenSquareBracket, "all_types", TokeTypes.tokComma, "all_types", TokeTypes.tokClosedSquareBracket]],
 
     # pregunta si una funcion
     "search_dic": [[TokeTypes.tokSearchDicc, TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen]],
