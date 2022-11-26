@@ -62,7 +62,8 @@ _Delete = Terminal('Delete',TokeTypes.tokDelete)
 _Move = Terminal('move',TokeTypes.tokMove)
 _Override = Terminal('override',TokeTypes.tokOverride)
 _Epsilon = Terminal('epsilon',None)
-_Insert = Terminal('insertDicc',TokeTypes)
+_Insert = Terminal('insertDicc',TokeTypes.tokInsert)
+_EOF = Terminal('EOF',TokeTypes.EOF)
 
 pow_nt = NonTerminal("pow")
 disjunction = NonTerminal("disjunction")
@@ -90,10 +91,6 @@ fun_type = NonTerminal('fun_type')
 list_nt = NonTerminal('List')
 assign_nt = NonTerminal('assign')
 return_nt = NonTerminal('return')
-
-
-
-
 delete = NonTerminal('delete')
 program = NonTerminal('program')
 stat_list =  NonTerminal('stat_list')
@@ -292,13 +289,13 @@ dic_func +=Production([insert_dic])
 
 dic_func +=Production([dic_dec])
 
-dic_dec += Production([_Dicc,_ID,_Assign,_OpenSquareBracket,all_types,_Comma,all_types,_ClosedSquareBracket])
+dic_dec += Production([_Dicc,_ID,_Assign,_OpenSquareBracket,args_list,_Comma,args_list,_ClosedSquareBracket])
 
-search_dic += Production([_SearchDicc, _OpenParen,expr, _ClosedParen])
+search_dic += Production([_SearchDicc, _OpenParen,args_list, _ClosedParen])
 
-recieve_dic += Production([_ReturnDicc, _OpenParen,expr, _ClosedParen])
+recieve_dic += Production([_ReturnDicc, _OpenParen,args_list, _ClosedParen])
 
-insert_dic += Production([_Insert, _OpenParen,expr, _ClosedParen])
+insert_dic += Production([_Insert, _OpenParen,args_list, _ClosedParen])
 
 nonTermList = [delete,program,stat_list,stat_list_fix,stat,override_expr,var_reasign,return_exp,continue_exp,break_exp,let_dec,func_dec,print_stat,condictional_stat
             ,if_stat,else_fix,else_stat,loop_stat,lenguage_funtion,move,insert,all_types,leng_type,args_list,args_list_fix,params_list,params_list_fix,type,expr,term,

@@ -1,6 +1,6 @@
 from logging import error
 from unittest import result
-import compGlobals
+import comp_globals
 import tokens
 import compErrors
 
@@ -17,11 +17,11 @@ def readSpecialKeyword(chain,currentPos,mytokens,line,column):
     #if currentPos!=" ":
     #    compGlobals.errorsList.append(compErrors.CompError("Wrong special token declared",line,column))
     #    return -1
-    if currentToken in compGlobals.specialKeywordsDicc:
-        tempType=compGlobals.specialKeywordsDicc[currentToken]
+    if currentToken in comp_globals.specialKeywordsDicc:
+        tempType=comp_globals.specialKeywordsDicc[currentToken]
         mytokens.append(tokens.Token(tempType,line,column,currentToken))
     else:    
-        mytokens.append(tokens.Token(compGlobals.TokeTypes.tokID,line,column))
+        mytokens.append(tokens.Token(comp_globals.TokeTypes.tokID,line,column))
     
     return currentPos
     
@@ -31,12 +31,12 @@ def readOperator(chain,currentPos,mytokens,line,column):
     tempOperator=currentToken
     while currentPos<len(chain):
         tempOperator+=chain[currentPos]
-        if tempOperator in compGlobals.operatorsDicc:
+        if tempOperator in comp_globals.operatorsDicc:
             currentPos+=1
             currentToken=tempOperator
         else:
             break
-    tempType=compGlobals.operatorsDicc[currentToken]
+    tempType=comp_globals.operatorsDicc[currentToken]
     mytokens.append(tokens.Token(tempType,line,column))
     
     return currentPos
@@ -48,14 +48,14 @@ def readString(chain,currentPos,mytokens,line,column):
         if chain[currentPos]=="\"":
             break
         currentToken+=str(chain[currentPos])
-    mytokens.append(tokens.Token(compGlobals.TokeTypes.tokString,line,column))
+    mytokens.append(tokens.Token(comp_globals.TokeTypes.tokString,line,column))
     return currentPos
 
 def readAlphaNumeric(chain,currentPos,mytokens,line,column):
     currenToken=chain[currentPos]
     currentPos+=1
     while currentPos<len(chain):
-        if chain[currentPos].isalpha() or chain[currentPos].isnumeric() or chain[currentPos]=="_":
+        if chain[currentPos].isalpha() or chain[currentPos].isnumeric() or chain[currentPos]=="_" :
             currenToken+=chain[currentPos]
             currentPos+=1
         else:
@@ -63,11 +63,11 @@ def readAlphaNumeric(chain,currentPos,mytokens,line,column):
     #if chain[currentPos]!=" " and not chain[currentPos] in compGlobals.operatorsDicc:
     #    compGlobals.errorsList.append(compErrors.CompError("Wrong alphanumeric token declared",line,column))
     #    return -1
-    if currenToken in compGlobals.keywordsDicc:
-        tempType=compGlobals.keywordsDicc[currenToken]
+    if currenToken in comp_globals.keywordsDicc:
+        tempType=comp_globals.keywordsDicc[currenToken]
         mytokens.append(tokens.Token(tempType,line,column,currenToken))
     else:    
-        mytokens.append(tokens.Token(compGlobals.TokeTypes.tokID,line,column,currenToken))
+        mytokens.append(tokens.Token(comp_globals.TokeTypes.tokID,line,column,currenToken))
     
     return currentPos
 
@@ -78,7 +78,7 @@ def readNumeric(chain, currentPos,mytokens,line,column):
     while currentPos<len(chain):
         if chain[currentPos]==".":
             if point==1:
-                compGlobals.errorsList.append(compErrors.CompError("Wrong number token declared",line,column))
+                comp_globals.errorsList.append(compErrors.CompError("Wrong number token declared",line,column))
                 return -1
             else:
                 currentToken+=chain[currentPos]
@@ -94,9 +94,9 @@ def readNumeric(chain, currentPos,mytokens,line,column):
     #    return-1
     
     if point==0:
-        mytokens.append(tokens.Token(compGlobals.TokeTypes.tokInt,line,column,currentToken))
+        mytokens.append(tokens.Token(comp_globals.TokeTypes.tokInt,line,column,currentToken))
     else:
-        mytokens.append(tokens.Token(compGlobals.TokeTypes.tokDouble,line,column,currentToken))
+        mytokens.append(tokens.Token(comp_globals.TokeTypes.tokDouble,line,column,currentToken))
     return currentPos
 
 
@@ -124,16 +124,16 @@ def tokenizer(chain):
         currentToken=chain[currentPos]
         if currentToken==" ":
             pass
-        elif currentToken in compGlobals.bracketDicc:
-            tempType=compGlobals.bracketDicc[currentToken]
+        elif currentToken in comp_globals.bracketDicc:
+            tempType=comp_globals.bracketDicc[currentToken]
             mytokens.append(tokens.Token(tempType,line,column))
             
         
-        elif currentToken=="$":
-            specialKeyword=readSpecialKeyword(chain,currentPos,mytokens,line,column)-1
-            if len(compGlobals.errorsList)>0:
-                return None
-            currentPos=specialKeyword
+        # elif currentToken=="$":
+        #     specialKeyword=readSpecialKeyword(chain,currentPos,mytokens,line,column)-1
+        #     if len(comp_globals.errorsList)>0:
+        #         return None
+        #     currentPos=specialKeyword
         
         elif currentToken=="\n":
             line+=1
@@ -142,23 +142,23 @@ def tokenizer(chain):
             currentPos=readComment(chain,currentPos)-1
         elif currentToken.isnumeric():
             numericResult=readNumeric(chain,currentPos,mytokens,line,column)-1
-            if len(compGlobals.errorsList)>0:
+            if len(comp_globals.errorsList)>0:
                 return None
             currentPos=numericResult
         elif currentToken.isalpha():
             alphaResult=readAlphaNumeric(chain,currentPos,mytokens,line,column)-1
-            if len(compGlobals.errorsList)>0:
+            if len(comp_globals.errorsList)>0:
                 return None
             currentPos=alphaResult
         elif currentToken=="\"":
             stringResult=readString(chain,currentPos,mytokens,line,column)
-        elif currentToken in compGlobals.operatorsDicc :
+        elif currentToken in comp_globals.operatorsDicc :
             currentPos=readOperator(chain,currentPos,mytokens,line,column)-1
-        elif currentToken in compGlobals.puntuationDicc :
-            tempType=compGlobals.puntuationDicc[currentToken]
+        elif currentToken in comp_globals.puntuationDicc :
+            tempType=comp_globals.puntuationDicc[currentToken]
             mytokens.append(tokens.Token(tempType,line,column))
         else:
-            compGlobals.errorsList.append(compErrors.CompError("Unexpected token",line,column)) 
+            comp_globals.errorsList.append(compErrors.CompError("Unexpected token",line,column)) 
             return None
                     
         currentPos+=1
@@ -173,13 +173,13 @@ def tokenizer(chain):
         
 def balanceEverything(parenthesis, squareBracket, brackect):
     if parenthesis!=0:
-        compGlobals.errorsList.append(compErrors.CompError("Unbalance parenthesis",-1,-1)) 
+        comp_globals.errorsList.append(compErrors.CompError("Unbalance parenthesis",-1,-1)) 
         return False
     if squareBracket!=0:
-        compGlobals.errorsList.append(compErrors.CompError("Unbalance squareBracket",-1,-1)) 
+        comp_globals.errorsList.append(compErrors.CompError("Unbalance squareBracket",-1,-1)) 
         return False
     if brackect!=0:
-        compGlobals.errorsList.append(compErrors.CompError("Unbalance brackect",-1,-1)) 
+        comp_globals.errorsList.append(compErrors.CompError("Unbalance brackect",-1,-1)) 
         return False
     return True
     

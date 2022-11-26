@@ -59,6 +59,7 @@ class TokeTypes(enum.Enum):
 
     tokSearchDicc = enum.auto()
     tokReturnDicc = enum.auto()
+    tokInsertDicc = enum.auto()
 
     tokSum = enum.auto()  # +     -------
     tokSub = enum.auto()  # -     -------
@@ -99,6 +100,7 @@ class TokeTypes(enum.Enum):
     tokInsert = enum.auto()
     tokDelete = enum.auto()
     tokOverride = enum.auto()
+    EOF =enum.auto()
 
 
 keywordsDicc = {

@@ -9,7 +9,7 @@ terminales = ["epsilon", TokeTypes.tokComma, TokeTypes.tokOpenSquareBracket, Tok
               TokeTypes.tokEqual, TokeTypes.tokGreater, TokeTypes.tokLess, TokeTypes.tokIf, TokeTypes.tokContinue,
               TokeTypes.tokBreak, TokeTypes.tokReturn, TokeTypes.tokLoop, TokeTypes.tokSum, TokeTypes.tokSub, TokeTypes.tokMul, TokeTypes.tokDiv, TokeTypes.tokModDiv,
               TokeTypes.tokPow, TokeTypes.tokString, TokeTypes.tokInt, TokeTypes.tokDouble, TokeTypes.tokTrue, TokeTypes.tokFalse, TokeTypes.tokBool, TokeTypes.tokAssign,
-              TokeTypes.tokSemicolon, TokeTypes.tokClosedBracket, ]
+              TokeTypes.tokSemicolon, TokeTypes.tokClosedBracket, TokeTypes.EOF]
 
 
 productions = {
@@ -118,10 +118,10 @@ productions = {
     "factor": [["atom"], [TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen]],
 
     # atomos
-    "atom": [[TokeTypes.tokID], ["func_call"], [TokeTypes.tokNumber]   ,[TokeTypes.tokNone],[TokeTypes.tokNone], [TokeTypes.tokChain], [TokeTypes.tokTrue], [TokeTypes.tokFalse], ["epsilon"]],
+    "atom": [[TokeTypes.tokID], ["func_call"], [TokeTypes.tokNumber]  ,[TokeTypes.tokNone], [TokeTypes.tokChain], [TokeTypes.tokTrue], [TokeTypes.tokFalse], ["epsilon"]],
 
     # comparadores
-    "comparer": [[TokeTypes.tokEqual], [TokeTypes.tokNot], [TokeTypes.tokNotEqual], [TokeTypes.tokGreaterOrEqual], [TokeTypes.tokGreater], [TokeTypes.tokLess], [TokeTypes.tokLessOrEqual], [TokeTypes.tokAnd], [TokeTypes.tokOr]],
+    "comparer": [[TokeTypes.tokNot], [TokeTypes.tokNotEqual], [TokeTypes.tokGreaterOrEqual], [TokeTypes.tokGreater], [TokeTypes.tokLess], [TokeTypes.tokLessOrEqual], [TokeTypes.tokAnd], [TokeTypes.tokOr]],
 
 
     # llamados a funciones
@@ -131,16 +131,16 @@ productions = {
     "dic_func": [["search_dic"], ["recieve_dic"], ["insert_dic"], ["dic_dec"]],
 
     # declaracion de diccionario
-    "dic_dec": [[TokeTypes.tokDicc, TokeTypes.tokOpenSquareBracket, "all_types", TokeTypes.tokComma, "all_types", TokeTypes.tokClosedSquareBracket]],
+    "dic_dec": [[TokeTypes.tokDicc, TokeTypes.tokOpenSquareBracket, "args_list", TokeTypes.tokClosedSquareBracket]],
 
     # pregunta si una funcion
-    "search_dic": [[TokeTypes.tokSearchDicc, TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen]],
+    "search_dic": [[TokeTypes.tokSearchDicc, TokeTypes.tokOpenParen, "args_list", TokeTypes.tokClosedParen]],
 
     # retorna el valor asociado a la llave
-    "recieve_dic": [[TokeTypes.tokReturnDicc, TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen]],
+    "recieve_dic": [[TokeTypes.tokReturnDicc, TokeTypes.tokOpenParen, "args_list", TokeTypes.tokClosedParen]],
 
     # retorna el valor asociado a la llave
-    "insert_dic": [[TokeTypes.tokReturnDicc, TokeTypes.tokOpenParen, "expr", TokeTypes.tokClosedParen]],
+    "insert_dic": [[TokeTypes.tokInsertDicc, TokeTypes.tokOpenParen, "args_list", TokeTypes.tokClosedParen]],
 
     # vector type
  

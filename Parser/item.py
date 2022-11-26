@@ -16,7 +16,7 @@ class LR1Item:
     def __repr__(self) -> str:
         return self._repr
 
-    def get_symbol_at_dot(self) -> Component:
+    def getCurrentSymbol(self) -> Component:
         if self.dot_index < len(self.production.symbols):
             return self.production.symbols[self.dot_index]
         return None

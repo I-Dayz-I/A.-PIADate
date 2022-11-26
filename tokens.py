@@ -1,11 +1,6 @@
 import enum
 
 
-
-
-
-    
-
 class Token():
     def __init__(self,tokenType,line,column,value=None):
         self.value=value
