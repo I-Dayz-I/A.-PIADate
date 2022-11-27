@@ -1,4 +1,6 @@
-from grammar import Production, Symbol, Terminal
+import sys
+sys.path.append('.')
+from Grammar.grammar_classes import Production, Symbol, Terminal
 
 
 class LR1Item:

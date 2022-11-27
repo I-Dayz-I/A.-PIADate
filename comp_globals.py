@@ -1,9 +1,8 @@
 import enum
 
-from tokens import TokenType
 
 
-class TokeTypes(enum.Enum):
+class TokenType(enum.Enum):
     tokSemicolon = enum.auto()  # ;     -------
     tokPoint = enum.auto()  # .
     tokArrow = enum.auto()  # :
@@ -101,35 +100,36 @@ class TokeTypes(enum.Enum):
     tokDelete = enum.auto()
     tokOverride = enum.auto()
     EOF =enum.auto()
+    Symbol =enum.auto()
 
 
 keywordsDicc = {
     # Keywords Condicionales
-    "if": TokeTypes.tokIf,
-    "elif": TokeTypes.tokElif,
-    "else": TokeTypes.tokElse,
+    "if": TokenType.tokIf,
+    "elif": TokenType.tokElif,
+    "else": TokenType.tokElse,
     
-    "override":TokeTypes.tokOverride,
+    "override":TokenType.tokOverride,
 
     # declaracion
-    "let": TokeTypes.tokLet,
-    "def": TokeTypes.tokDef,
+    "let": TokenType.tokLet,
+    "def": TokenType.tokDef,
 
     # Keywords de Ciclos
-    "loop": TokeTypes.tokLoop,
+    "loop": TokenType.tokLoop,
 
-    "break": TokeTypes.tokBreak,
-    "continue": TokeTypes.tokContinue,
+    "break": TokenType.tokBreak,
+    "continue": TokenType.tokContinue,
 
     # Keywords de tipos
-    "int": TokeTypes.tokInt,
-    "double": TokeTypes.tokDouble,
-    "string": TokeTypes.tokString,
-    "dict": TokeTypes.tokDicc,
+    "int": TokenType.tokInt,
+    "double": TokenType.tokDouble,
+    "string": TokenType.tokString,
+    "dict": TokenType.tokDicc,
 
     # Keywords de valor
-    "bool": TokeTypes.tokBool,
-    "None": TokeTypes.tokNone,
+    "bool": TokenType.tokBool,
+    "None": TokenType.tokNone,
     # "True"     : TokeTypes.tokTrue,
     # "False "   : TokeTypes.tokFalse,
 
@@ -140,8 +140,8 @@ keywordsDicc = {
     # "fenomeno" : TokeTypes.tokphenomenon,
 
     # Keywords de ajedrez
-    "Board": TokeTypes.tokBoard,
-    "CPiece": TokeTypes.tokCPiece,
+    "Board": TokenType.tokBoard,
+    "CPiece": TokenType.tokCPiece,
 
 
     # especiales
@@ -150,27 +150,27 @@ keywordsDicc = {
 
 operatorsDicc = {
     # Operadores de calculo
-    "+": TokeTypes.tokSum,
-    "-": TokeTypes.tokSub,
-    "*": TokeTypes.tokMul,
-    ":": TokeTypes.tokDiv,
-    "%": TokeTypes.tokModDiv,
-    "^": TokeTypes.tokPow,
+    "+": TokenType.tokSum,
+    "-": TokenType.tokSub,
+    "*": TokenType.tokMul,
+    ":": TokenType.tokDiv,
+    "%": TokenType.tokModDiv,
+    "^": TokenType.tokPow,
 
     # operador de asignacion
-    "=": TokeTypes.tokAssign,
+    "=": TokenType.tokAssign,
 
     # Operadores condicionales
-    "&&": TokeTypes.tokAnd,
-    "||": TokeTypes.tokOr,
-    "!":    TokeTypes.tokNot,
+    "&&": TokenType.tokAnd,
+    "||": TokenType.tokOr,
+    "!":    TokenType.tokNot,
     # Operadores de comparacion
-    "==": TokeTypes.tokEqual,
-    "!=": TokeTypes.tokNotEqual,
-    "<=": TokeTypes.tokLessOrEqual,
-    ">=": TokeTypes.tokGreaterOrEqual,
-    ">": TokeTypes.tokGreater,
-    "<": TokeTypes.tokLess,
+    "==": TokenType.tokEqual,
+    "!=": TokenType.tokNotEqual,
+    "<=": TokenType.tokLessOrEqual,
+    ">=": TokenType.tokGreaterOrEqual,
+    ">": TokenType.tokGreater,
+    "<": TokenType.tokLess,
 
 
 
@@ -184,24 +184,24 @@ operatorsDicc = {
 }
 
 bracketDicc = {
-    "(": TokeTypes.tokOpenParen,
-    ")": TokeTypes.tokClosedParen,
-    "[": TokeTypes.tokOpenSquareBracket,
-    "]": TokeTypes.tokClosedSquareBracket,
-    "{": TokeTypes.tokOpenBracket,
-    "}": TokeTypes.tokClosedBracket,
+    "(": TokenType.tokOpenParen,
+    ")": TokenType.tokClosedParen,
+    "[": TokenType.tokOpenSquareBracket,
+    "]": TokenType.tokClosedSquareBracket,
+    "{": TokenType.tokOpenBracket,
+    "}": TokenType.tokClosedBracket,
 }
 
 puntuationDicc = {
     # Signos de comentario
-    "#": TokeTypes.tokComennt,
+    "#": TokenType.tokComennt,
 
     # Signos de puntuacion
-    ";":  TokeTypes.tokSemicolon,
+    ";":  TokenType.tokSemicolon,
     # "." :  TokeTypes.tokPoint,
 
     # Signos de Separacion
-    ",": TokeTypes.tokComma,
+    ",": TokenType.tokComma,
     # "."  : TokeTypes.tokColom,
 
     # simbolo para especificar tipos de retorno
@@ -228,9 +228,9 @@ specialKeywordsDicc = {
 
     # Chess
 
-    "insert": TokeTypes.tokInsert,
-    "delete": TokeTypes.tokDelete,
-    "move":TokeTypes.tokMove,
+    "insert": TokenType.tokInsert,
+    "delete": TokenType.tokDelete,
+    "move":TokenType.tokMove,
 
 
 }

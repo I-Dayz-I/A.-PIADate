@@ -1,69 +1,69 @@
 from Grammar.grammar_classes import Grammar, Component, Production, Terminal, NonTerminal
-from comp_globals import TokeTypes
+from comp_globals import TokenType
 from typing import Dict, List, Tuple, Set
 
 
-_Semicolon = Terminal(';',TokeTypes.tokSemicolon)  # ;     -------
-_Point = Terminal('.',TokeTypes.tokPoint)  # .
-_Arrow = Terminal(':',TokeTypes.tokArrow) # :
-_Comennt =Terminal('#',TokeTypes.tokComennt)  # -------
-_OpenParen =Terminal('(',TokeTypes.tokOpenParen)   # (     -------
-_ClosedParen = Terminal(')',TokeTypes.tokClosedParen)  # )     -------
-_OpenBracket = Terminal('{',TokeTypes.tokOpenBracket)   # {     -------
-_ClosedBracket = Terminal('}',TokeTypes.tokClosedBracket)  # }     -------
-_OpenSquareBracket = Terminal('[',TokeTypes.tokOpenSquareBracket)  # [     -------
-_ClosedSquareBracket = Terminal(']',TokeTypes.tokClosedSquareBracket) # ]     -------
-_Int =  Terminal('int',TokeTypes.tokInt)  # int     -------
-_Double =  Terminal('double',TokeTypes.tokDouble) # double     -------
-_String = Terminal('string',TokeTypes.tokString)  # string     -------
-_Bool = Terminal('bool',TokeTypes.tokBool)   # bool     -------
-_None = Terminal('none',TokeTypes.tokNone)  # None
-_True =  Terminal('true',TokeTypes.tokTrue)  # True     -------
-_False = Terminal('false',TokeTypes.tokFalse)  # False     -------
-_Dicc =  Terminal('Dicc',TokeTypes.tokDicc)  # Dicc     -------
-_Number = Terminal('Dicc',TokeTypes.tokDicc)   # numeros    -------
-_Chain = Terminal(-1,TokeTypes.tokChain)   # Cadenas     -------
-_List =  Terminal('list',TokeTypes.tokList)  # list (propio)     -------
-_If = Terminal('if',TokeTypes.tokIf)  # if     -------
-_Else = Terminal('else',TokeTypes.tokElse)  # else     -------
-_Loop = Terminal('loop',TokeTypes.tokLoop)  # loop     -------
-_Break = Terminal('break',TokeTypes.tokBreak)  # break     -------
-_Continue = Terminal('continue',TokeTypes.tokContinue)  # continue     -------
-_Let = Terminal('let',TokeTypes.tokLet) # let     -------
-_Def = Terminal('def',TokeTypes.tokDef)  # TokeTypes.tokDef     -------
-_Import = Terminal('import',TokeTypes.tokImport)  # continue
-_Comma = Terminal(',',TokeTypes.tokComma)  # ,
-_NextLine = Terminal(',',TokeTypes.tokComma)  # /n
-_Not = Terminal('not',TokeTypes.tokNot)  # !
-_Equal = Terminal('==',TokeTypes.tokEqual)  # ==     -------
-_NotEqual = Terminal('!=',TokeTypes.tokNotEqual)  # !=     -------
-_LessOrEqual = Terminal('<=',TokeTypes.tokLessOrEqual)  # <=     -------
-_GreaterOrEqual = Terminal('>=',TokeTypes.tokGreaterOrEqual) # >=     -------
-_Greater = Terminal('>',TokeTypes.tokGreater) # >     -------
-_Less = Terminal('<',TokeTypes.tokLess) # <     -------
-_SearchDicc = Terminal('searchDicc',TokeTypes.tokSearchDicc) 
-_ReturnDicc = Terminal('returnDicc',TokeTypes.tokReturnDicc) 
-_Sum = Terminal('+',TokeTypes.tokSum)  # +     -------
-_Sub = Terminal('-',TokeTypes.tokSub)   # -     -------
-_Mul = Terminal('*',TokeTypes.tokMul)  # *     -------
-_Div = Terminal('/',TokeTypes.tokDiv)  # /     -------
-_ModDiv = Terminal('%',TokeTypes.tokModDiv)  # %     -------
-_Pow = Terminal('^',TokeTypes.tokPow)  # ^     -------
-_And = Terminal('&&',TokeTypes.tokAnd)   # &&     -------
-_Or = Terminal('||',TokeTypes.tokOr)  # ||     -------
-_ID = Terminal(None,TokeTypes.tokID)   # -------
-_Assign = Terminal('=',TokeTypes.tokAssign)   # Assign     -------
-_Return = Terminal('return',TokeTypes.tokReturn)  # Return      -------
-_Print = Terminal('print',TokeTypes.tokPrint)  # Print     -------
-_Board = Terminal('board',TokeTypes.tokBoard) 
-_CPiece = Terminal('ChessPiece',TokeTypes.tokCPiece) 
-_Insert = Terminal('Insert',TokeTypes.tokInsert) 
-_Delete = Terminal('Delete',TokeTypes.tokDelete)
-_Move = Terminal('move',TokeTypes.tokMove)
-_Override = Terminal('override',TokeTypes.tokOverride)
+_Semicolon = Terminal(';',TokenType.tokSemicolon)  # ;     -------
+_Point = Terminal('.',TokenType.tokPoint)  # .
+_Arrow = Terminal(':',TokenType.tokArrow) # :
+_Comennt =Terminal('#',TokenType.tokComennt)  # -------
+_OpenParen =Terminal('(',TokenType.tokOpenParen)   # (     -------
+_ClosedParen = Terminal(')',TokenType.tokClosedParen)  # )     -------
+_OpenBracket = Terminal('{',TokenType.tokOpenBracket)   # {     -------
+_ClosedBracket = Terminal('}',TokenType.tokClosedBracket)  # }     -------
+_OpenSquareBracket = Terminal('[',TokenType.tokOpenSquareBracket)  # [     -------
+_ClosedSquareBracket = Terminal(']',TokenType.tokClosedSquareBracket) # ]     -------
+_Int =  Terminal('int',TokenType.tokInt)  # int     -------
+_Double =  Terminal('double',TokenType.tokDouble) # double     -------
+_String = Terminal('string',TokenType.tokString)  # string     -------
+_Bool = Terminal('bool',TokenType.tokBool)   # bool     -------
+_None = Terminal('none',TokenType.tokNone)  # None
+_True =  Terminal('true',TokenType.tokTrue)  # True     -------
+_False = Terminal('false',TokenType.tokFalse)  # False     -------
+_Dicc =  Terminal('Dicc',TokenType.tokDicc)  # Dicc     -------
+_Number = Terminal('Dicc',TokenType.tokDicc)   # numeros    -------
+_Chain = Terminal(-1,TokenType.tokChain)   # Cadenas     -------
+_List =  Terminal('list',TokenType.tokList)  # list (propio)     -------
+_If = Terminal('if',TokenType.tokIf)  # if     -------
+_Else = Terminal('else',TokenType.tokElse)  # else     -------
+_Loop = Terminal('loop',TokenType.tokLoop)  # loop     -------
+_Break = Terminal('break',TokenType.tokBreak)  # break     -------
+_Continue = Terminal('continue',TokenType.tokContinue)  # continue     -------
+_Let = Terminal('let',TokenType.tokLet) # let     -------
+_Def = Terminal('def',TokenType.tokDef)  # TokeTypes.tokDef     -------
+_Import = Terminal('import',TokenType.tokImport)  # continue
+_Comma = Terminal(',',TokenType.tokComma)  # ,
+_NextLine = Terminal(',',TokenType.tokComma)  # /n
+_Not = Terminal('not',TokenType.tokNot)  # !
+_Equal = Terminal('==',TokenType.tokEqual)  # ==     -------
+_NotEqual = Terminal('!=',TokenType.tokNotEqual)  # !=     -------
+_LessOrEqual = Terminal('<=',TokenType.tokLessOrEqual)  # <=     -------
+_GreaterOrEqual = Terminal('>=',TokenType.tokGreaterOrEqual) # >=     -------
+_Greater = Terminal('>',TokenType.tokGreater) # >     -------
+_Less = Terminal('<',TokenType.tokLess) # <     -------
+_SearchDicc = Terminal('searchDicc',TokenType.tokSearchDicc) 
+_ReturnDicc = Terminal('returnDicc',TokenType.tokReturnDicc) 
+_Sum = Terminal('+',TokenType.tokSum)  # +     -------
+_Sub = Terminal('-',TokenType.tokSub)   # -     -------
+_Mul = Terminal('*',TokenType.tokMul)  # *     -------
+_Div = Terminal('/',TokenType.tokDiv)  # /     -------
+_ModDiv = Terminal('%',TokenType.tokModDiv)  # %     -------
+_Pow = Terminal('^',TokenType.tokPow)  # ^     -------
+_And = Terminal('&&',TokenType.tokAnd)   # &&     -------
+_Or = Terminal('||',TokenType.tokOr)  # ||     -------
+_ID = Terminal(None,TokenType.tokID)   # -------
+_Assign = Terminal('=',TokenType.tokAssign)   # Assign     -------
+_Return = Terminal('return',TokenType.tokReturn)  # Return      -------
+_Print = Terminal('print',TokenType.tokPrint)  # Print     -------
+_Board = Terminal('board',TokenType.tokBoard) 
+_CPiece = Terminal('ChessPiece',TokenType.tokCPiece) 
+_Insert = Terminal('Insert',TokenType.tokInsert) 
+_Delete = Terminal('Delete',TokenType.tokDelete)
+_Move = Terminal('move',TokenType.tokMove)
+_Override = Terminal('override',TokenType.tokOverride)
 _Epsilon = Terminal('epsilon',None)
-_Insert = Terminal('insertDicc',TokeTypes.tokInsert)
-_EOF = Terminal('EOF',TokeTypes.EOF)
+_Insert = Terminal('insertDicc',TokenType.tokInsert)
+_EOF = Terminal('EOF',TokenType.EOF)
 
 pow_nt = NonTerminal("pow")
 disjunction = NonTerminal("disjunction")

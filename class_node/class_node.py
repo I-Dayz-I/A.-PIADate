@@ -9,7 +9,7 @@ from tokenize import Double
 
 from numpy import true_divide
 
-from comp_globals import TokeTypes 
+from comp_globals import TokenType 
 import enum
 
 class nodetypes(enum.Enum):
@@ -908,7 +908,7 @@ class ProgramNode(ClassNode):
         head=None
         while indexProduc[0]<len(productionList) :
             head=productionList[indexProduc].head
-            if productionList[indexProduc].components[0]==TokeTypes.tokClosedBracket:
+            if productionList[indexProduc].components[0]==TokenType.tokClosedBracket:
                 break
             indexProduc[0]+=1
             if head in self.posibleProductions:
@@ -1072,7 +1072,7 @@ def eatComparer(productionList,indexProduc,context):
 
 def eatFactor(productionList,indexProduc,context):
     component=productionList[indexProduc][0][1]
-    if component==productionList[indexProduc][0][0]==TokeTypes.tokOpenParen:
+    if component==productionList[indexProduc][0][0]==TokenType.tokOpenParen:
             indexProduc[0]+=1
             return eatExpression(productionList,indexProduc,context)
     else:
@@ -1597,37 +1597,37 @@ def valNode(node):
 atomDicc={}
 #[TokeTypes.tokID],["func_call"],[TokeTypes.tokNumber],[TokeTypes.tokChain],[TokeTypes.tokNone],[TokeTypes.tokChain],[TokeTypes.tokTrue],[TokeTypes.tokFalse],["dic_func"],["epsilon"]
 def fillAtom():
-    atomDicc[TokeTypes.tokID]=IdNode
+    atomDicc[TokenType.tokID]=IdNode
     
-    atomDicc[TokeTypes.tokNumber]=NumberNode
-    atomDicc[TokeTypes.tokChain]=ChainNode
-    atomDicc[TokeTypes.tokNone]=NoneNode
-    atomDicc[TokeTypes.tokTrue]=TrueNode
-    atomDicc[TokeTypes.tokFalse]=FalseNode
+    atomDicc[TokenType.tokNumber]=NumberNode
+    atomDicc[TokenType.tokChain]=ChainNode
+    atomDicc[TokenType.tokNone]=NoneNode
+    atomDicc[TokenType.tokTrue]=TrueNode
+    atomDicc[TokenType.tokFalse]=FalseNode
     #atomDicc["dic_dec"]=dic_func?
     
 expresionDicc={}
 def fillExpresion():
-    expresionDicc[TokeTypes.tokSub]=FalseNode
-    expresionDicc[TokeTypes.tokSum]=FalseNode
+    expresionDicc[TokenType.tokSub]=FalseNode
+    expresionDicc[TokenType.tokSum]=FalseNode
     
 termDicc={}
 def fillTerm():
-    termDicc[TokeTypes.tokMul]=FalseNode
-    termDicc[TokeTypes.tokDiv]=FalseNode
+    termDicc[TokenType.tokMul]=FalseNode
+    termDicc[TokenType.tokDiv]=FalseNode
 
 #[TokeTypes.tokEqual],[TokeTypes.tokNot],[TokeTypes.tokNotEqual],[TokeTypes.tokGreaterOrEqual],[TokeTypes.tokGreater],[TokeTypes.tokLess],[TokeTypes.tokLessOrEqual],[TokeTypes.tokAnd],[TokeTypes.tokOr]
 comparerDicc={}
 def fillComparer():
-    comparerDicc[TokeTypes.tokEqual]=FalseNode
-    comparerDicc[TokeTypes.tokNot]=FalseNode
-    comparerDicc[TokeTypes.tokNotEqual]=FalseNode
-    comparerDicc[TokeTypes.tokGreaterOrEqual]=FalseNode
-    comparerDicc[TokeTypes.tokGreater]=FalseNode
-    comparerDicc[TokeTypes.tokLess]=FalseNode
-    comparerDicc[TokeTypes.tokLessOrEqual]=FalseNode
-    comparerDicc[TokeTypes.tokAnd]=FalseNode
-    comparerDicc[TokeTypes.tokOr]=FalseNode
+    comparerDicc[TokenType.tokEqual]=FalseNode
+    comparerDicc[TokenType.tokNot]=FalseNode
+    comparerDicc[TokenType.tokNotEqual]=FalseNode
+    comparerDicc[TokenType.tokGreaterOrEqual]=FalseNode
+    comparerDicc[TokenType.tokGreater]=FalseNode
+    comparerDicc[TokenType.tokLess]=FalseNode
+    comparerDicc[TokenType.tokLessOrEqual]=FalseNode
+    comparerDicc[TokenType.tokAnd]=FalseNode
+    comparerDicc[TokenType.tokOr]=FalseNode
 
 diccFunDicc={}
 def fillDiccFun():

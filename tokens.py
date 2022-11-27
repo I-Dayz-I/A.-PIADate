@@ -6,12 +6,13 @@ class Token():
         self.value=value
         self.tokenType=tokenType
         self.line=line
+        self.lexeme = value
         self.column=column
     
     def __str__(self) -> str:
         return str(self.tokenType)
     
+    def __repr__(self):
+        return self.__str__()
     
-class TokenType():
-    diccType={}
     

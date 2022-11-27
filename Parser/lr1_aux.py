@@ -1,5 +1,7 @@
-from grammar import Grammar, Symbol, Terminal, NonTerminal, Production
-from lr1_item import LR1Item
+import sys
+sys.path.append('.')
+from Grammar.grammar_classes import Grammar, Symbol, Terminal, NonTerminal, Production
+from Parser.lr1_item import LR1Item
 from typing import Dict, List, Tuple, Set
 from json import load
 import json
