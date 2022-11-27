@@ -1,4 +1,4 @@
-from Grammar.grammar_classes import Production, Component,Terminal
+from grammar import Production, Symbol, Terminal
 
 
 class LR1Item:
@@ -16,7 +16,7 @@ class LR1Item:
     def __repr__(self) -> str:
         return self._repr
 
-    def getCurrentSymbol(self) -> Component:
+    def get_symbol_at_dot(self) -> Symbol:
         if self.dot_index < len(self.production.symbols):
             return self.production.symbols[self.dot_index]
         return None

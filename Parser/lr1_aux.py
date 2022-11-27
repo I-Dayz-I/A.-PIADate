@@ -1,6 +1,5 @@
-from Grammar.grammar_classes import Grammar, Component, Production, Terminal, NonTerminal
-from comp_globals import TokeTypes
-from item import LR1Item
+from grammar import Grammar, Symbol, Terminal, NonTerminal, Production
+from lr1_item import LR1Item
 from typing import Dict, List, Tuple, Set
 from json import load
 import json
@@ -8,102 +7,107 @@ from os.path import exists
 
 
 class Automata:
-    
-    def __init__(self,Grammar : Grammar) -> None:
-        
-        #Extending the grammar with the a initial Symbol
-        self.grammar = Grammar
-        self.grammar.start = None
-        self.extendGrammar()
-        
+    def __init__(self, grammar: Grammar):
+        self.grammar = grammar
+        self.extended_grammar()
+
         start = self.grammar.start
-        
-        #Creating all initial Items with index in 0
+
         initial_items = {start: [LR1Item(start.productions[0], 0, Terminal('$', '$'))]}
-        
-        for non_term in self.grammar.nonTList:
-            if (non_term.name == 'SProgram'):
+
+        for non_term in self.grammar.non_terminal_list:
+            if (non_term.name == 'S'):
                 continue
             initial_items[non_term] = []
             for prod in non_term.productions:
                 initial_items[non_term].append(LR1Item(prod, 0))
-        
+
         initial_state = State(initial_items[start])
-        initial_state.build(initial_items) 
-        
+        initial_state.build(initial_items)
+
         list_states = [initial_state]
         dict_states = {initial_state: initial_state}
         list_states_aux = list_states[:]
-        
+
         while len(list_states_aux) > 0:
             state = list_states_aux[0]
             list_states_aux = list_states_aux[1:] if len(list_states_aux) >= 1 else []
 
-            for sym in state.expectedComponet:
+            for sym in state.expected_symbols:
                 state.set_go_to(sym, dict_states, list_states, list_states_aux, initial_items)
 
         self.list_states = list_states
-    
-    
-    def extendGrammar(self):
-        #Getting the first production of the Grammar
-        newProduction = Production(None,[self.grammar.head])
-        #Creating the new NonTerminal
-        newNonTerminal = NonTerminal('SProgram', [newProduction])
-        #Adding the Nonterminal to the production and the Production to the NonTerminal
-        newProduction.head = newNonTerminal
-        self.grammar.start = newNonTerminal
-        self.grammar.nonTList.append(newNonTerminal)
 
+    def extended_grammar(self):
+        new_production = Production([self.grammar.start])
+       # new_production.set_builder(self.grammar.start.productions[0].get_ast_node_builder())
+        new_non_terminal = NonTerminal('S', [new_production])
+        new_production.head = new_non_terminal
+        self.grammar.start = new_non_terminal
+        self.grammar.non_terminal_list.append(new_non_terminal)
 
 
 class State:
-    def __init__(self, items:List[LR1Item]) -> None:
-        self.itemList: List[LR1Item] = items
+    def __init__(self, items: List[LR1Item]):
+        self.list_items: List[LR1Item] = items
+        self._repr = "".join(f"{item} , " for item in items)
         self.items = set(items)
-        self.nexts: Dict[Component, State] = {}
-        self.expectedComponet: Dict[Component, Set[LR1Item]] = {}
+        self.nexts: Dict[Symbol, State] = {}
+        self.expected_symbols: Dict[Symbol, Set[LR1Item]] = {}
         self.number: int = 0
+        self.hash: int = hash(self._repr)
 
+    def __hash__(self):
+        return self.hash
 
-    def buildState(self, initialItems: Dict[NonTerminal, List[LR1Item]]):
-        aux = self.itemList 
-        
+    def __eq__(self, o):
+        if isinstance(o, State):
+            return self._repr == o._repr
+        return False
+
+    def __repr__(self):
+        return self._repr
+
+    def build(self, initial_items: Dict[NonTerminal, List[LR1Item]]):
+        aux = self.list_items[:]
+
         while len(aux) > 0:
             item = aux[0]
             aux = aux[1:] if len(aux) >= 1 else []
-            comp = item.getCurrentSymbol()
+            sym = item.get_symbol_at_dot()
             b = {item}
-            if item.dot_index == len(item.production.components):
+            if item.dot_index == len(item.production.symbols):
                 continue
-            if comp in self.expectedComponet:
-                self.expectedComponet[comp].add(item)
+            if sym in self.expected_symbols:
+                self.expected_symbols[sym].add(item)
             else:
-                self.expectedComponet[comp] = {item}
+                self.expected_symbols[sym] = {item}
+            
+            if isinstance(sym,bool):
+                print('here')
 
-            if not comp.isTerminal():
-                for i in initialItems[comp]:
-                    if item.dot_index + 1 == len(item.production.components):
+            if not sym.is_terminal():
+                for i in initial_items[sym]:
+                    if item.dot_index + 1 == len(item.production.symbols):
                         lookahead = item.lookahead
                     else:
-                        lookahead = item.production.components[item.dot_index + 1]
+                        lookahead = item.production.symbols[item.dot_index + 1]
                     new_item = LR1Item(i.production, i.dot_index, lookahead)
                     if new_item not in self.items:
                         self.items.add(new_item)
                         aux.append(new_item)
-    
-    
-    def setGoTo(self,sym: Component, dict_states, list_states, aux: List, initial_items ):
+
+    def set_go_to(self, sym: Symbol, dict_states, list_states, aux: List, initial_items):
         new_items = []
-        
-        for i in self.expectedComponet[sym]:
+
+        for i in self.expected_symbols[sym]:
             new_item = LR1Item(i.production, i.dot_index + 1, i.lookahead)
             new_items.append(new_item)
         new_state = State(new_items)
 
         if new_state not in dict_states:
             new_state.number = len(dict_states)
-            new_state.buildState(initial_items)
+            new_state.build(initial_items)
             dict_states[new_state] = new_state
             list_states.append(new_state)
             aux.append(new_state)
@@ -111,7 +115,7 @@ class State:
             new_state = dict_states[new_state]
 
         self.nexts[sym] = new_state
-        
+
 
 class LR1Table:
     def __init__(self, grammar: Grammar):
@@ -120,13 +124,13 @@ class LR1Table:
         self.go_to_table = []
 
         # If the action and go_to tables do not exist, they are built and then saved in a .json file.
-        if not exists("lr1_table.json"):
-            self.build_table()
-        else:
-            with open("lr1_table.json") as file:
-                table = load(file)
-                self.action_table = table[0]
-                self.go_to_table = table[1]
+        #if not exists("lr1_table.json"):
+        self.build_table()
+        #else:
+        #    with open("lr1_table.json") as file:
+        #        table = load(file)
+        #        self.action_table = table[0]
+        #        self.go_to_table = table[1]
 
     def build_table(self):
         aut = Automata(self.grammar)
@@ -137,21 +141,20 @@ class LR1Table:
             state_go_to: Dict[str, int] = {}
 
             for symbol in state.nexts:
-                if symbol.isTerminal():
-                    state_action[symbol.name] = ('SProgram', state.nexts[symbol].number)
+                if symbol.is_terminal():
+                    state_action[symbol.name] = ('S', state.nexts[symbol].number)
                 else:
                     state_go_to[symbol.name] = state.nexts[symbol].number
 
             dict_lookahead_item: Dict[Terminal, LR1Item] = {}
 
             for item in state.items:
-                if item.dot_index == len(item.production.components):
+                if item.dot_index == len(item.production.symbols):
                     dict_lookahead_item[item.lookahead] = item
 
-##FIX THIS
             for lookahead in dict_lookahead_item:
                 state_action[lookahead.name] = ('R', dict_lookahead_item[lookahead].production.pos)
-                if lookahead.name == '$' and dict_lookahead_item[lookahead].production.head.name == 'SProgram':
+                if lookahead.name == '$' and dict_lookahead_item[lookahead].production.head.name == 'S':
                     state_action[lookahead.name] = ('OK', -1)
 
             self.action_table.append(state_action)
