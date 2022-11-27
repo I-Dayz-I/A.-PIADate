@@ -1,4 +1,4 @@
-from Grammar.grammar_classes import Grammar, Component, Production, Terminal, NonTerminal
+from Grammar.grammar_classes import Grammar, Production, Terminal, NonTerminal
 from comp_globals import TokenType
 from typing import Dict, List, Tuple, Set
 
@@ -51,7 +51,7 @@ _ModDiv = Terminal('%',TokenType.tokModDiv)  # %     -------
 _Pow = Terminal('^',TokenType.tokPow)  # ^     -------
 _And = Terminal('&&',TokenType.tokAnd)   # &&     -------
 _Or = Terminal('||',TokenType.tokOr)  # ||     -------
-_ID = Terminal(None,TokenType.tokID)   # -------
+_ID = Terminal('Identifier',TokenType.tokID)   # -------
 _Assign = Terminal('=',TokenType.tokAssign)   # Assign     -------
 _Return = Terminal('return',TokenType.tokReturn)  # Return      -------
 _Print = Terminal('print',TokenType.tokPrint)  # Print     -------

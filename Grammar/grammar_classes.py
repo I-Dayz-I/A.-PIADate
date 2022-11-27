@@ -173,7 +173,7 @@ _ModDiv = Terminal('%',TokenType.tokModDiv)  # %     -------
 _Pow = Terminal('^',TokenType.tokPow)  # ^     -------
 _And = Terminal('&&',TokenType.tokAnd)   # &&     -------
 _Or = Terminal('||',TokenType.tokOr)  # ||     -------
-_ID = Terminal(None,TokenType.tokID)   # -------
+_ID = Terminal('identifier',TokenType.tokID)   # -------
 _Assign = Terminal('=',TokenType.tokAssign)   # Assign     -------
 _Return = Terminal('return',TokenType.tokReturn)  # Return      -------
 _Print = Terminal('print',TokenType.tokPrint)  # Print     -------
@@ -202,7 +202,7 @@ if_def = NonTerminal('if_def')
 elif_def = NonTerminal('elif_def')
 else_def = NonTerminal('else_def')
 while_def = NonTerminal('while_def')
-type_nt = NonTerminal('type')
+#type_nt = NonTerminal('type')
 atom = NonTerminal('atom')
 params = NonTerminal('params')
 sum_nt = NonTerminal("sum")

@@ -1,5 +1,5 @@
 import enum
-
+from comp_globals import TokenType
 
 class Token():
     def __init__(self,tokenType,line,column,value=None):
@@ -8,6 +8,9 @@ class Token():
         self.line=line
         self.lexeme = value
         self.column=column
+        if tokenType == TokenType.tokID:
+            self.name = 'identifier'
+            self.value = 'identifier'
     
     def __str__(self) -> str:
         return str(self.tokenType)
