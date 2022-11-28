@@ -103,8 +103,8 @@ class State:
             else:
                 self.expected_symbols[sym] = {item}
         
-            if(sym.name == 'comparer'):
-                print('comparer')
+            # if(sym.name == 'comparer'):
+            #     print('comparer')
 
 
             #if the symbol is a non terminal
@@ -123,7 +123,7 @@ class State:
                     if new_item not in self.items:
                         self.items.add(new_item)
                         aux.append(new_item)            
-        print('finish state building')
+        # print('finish state building')
 
     def set_go_to(self, sym: Symbol, dict_states, list_states, aux: List, initial_items):
         new_items = []

@@ -333,35 +333,50 @@ type += Production([_Bool])
 
 type += Production([_None])
 
-expr += Production([term,fix_expr])
+expr += Production([term,_Sum,expr])
 
-# expr += Production([term,_Sub,expr])
+expr += Production([term,_Sub,expr])
 
-# expr += Production([term,comparer,expr])
+expr += Production([term,_Equal,expr])
 
-# expr += Production([term])
+expr += Production([term,_Not,expr])
 
-fix_expr += Production([_Sum,expr]) 
+expr += Production([term,_GreaterOrEqual,expr])
 
-fix_expr += Production([_Sub,expr]) 
+expr += Production([term,_Greater,expr])
 
-fix_expr += Production([comparer,expr]) 
+expr += Production([term,_Less,expr])
 
-fix_expr += Production([_Epsilon]) 
+expr += Production([term,_LessOrEqual,expr])
+
+expr += Production([term,_And,expr])
+
+expr += Production([term,_Or,expr])
+
+
+expr += Production([term])
+
+# fix_expr += Production([_Sum,expr]) 
+
+# fix_expr += Production([_Sub,expr]) 
+
+# fix_expr += Production([comparer,expr]) 
+
+# fix_expr += Production([_Epsilon]) 
 
 
 #HACER UN FIX PARA TERM
-# term += Production([factor,term,_Mul])
+term += Production([factor,_Mul,term])
 
-# term += Production([factor,term,_Div])
+term += Production([factor,_Div,term])
 
-term += Production([factor,fix_term])
+term += Production([factor])
 
-fix_term += Production([_Div,term])
+# fix_term += Production([_Div,term])
 
-fix_term += Production([_Mul,term])
+# fix_term += Production([_Mul,term])
 
-fix_term += Production([_Epsilon])
+# fix_term += Production([_Epsilon])
 
 factor += Production([atom])
 
@@ -384,21 +399,21 @@ atom += Production([_False])
 
 atom += Production([_Epsilon])
 
-comparer += Production([_Equal])
+# comparer += Production([_Equal])
 
-comparer += Production([_Not])
+# comparer += Production([_Not])
 
-comparer += Production([_GreaterOrEqual])
+# comparer += Production([_GreaterOrEqual])
 
-comparer += Production([_Greater])
+# comparer += Production([_Greater])
 
-comparer += Production([_Less])
+# comparer += Production([_Less])
 
-comparer += Production([_LessOrEqual])
+# comparer += Production([_LessOrEqual])
 
-comparer += Production([_And])
+# comparer += Production([_And])
 
-comparer += Production([_Or])
+# comparer += Production([_Or])
 
 func_call += Production([dic_func])
 
@@ -422,8 +437,8 @@ insert_dic += Production([_Insert, _OpenParen,args_list, _ClosedParen])
 
 nonTermList = [delete,program,stat_list,stat_list_fix,stat,override_expr,var_reasign,return_exp,continue_exp,break_exp,let_dec,func_dec,print_stat,condictional_stat
             ,if_stat,else_fix,else_stat,loop_stat,lenguage_funtion,move,insert,all_types,leng_type,args_list,args_list_fix,params_list,params_list_fix,type,expr,term,
-            factor,atom,comparer,func_call,dic_func,dic_dec,search_dic,recieve_dic,insert_dic,
-          atom,term,fix_term,fix_expr,factor]
+            factor,atom,func_call,dic_func,dic_dec,search_dic,recieve_dic,insert_dic,
+          atom,term,factor]
 
 def GetGrammar() ->Grammar :
     fullGrammar = Grammar(nonTermList,program)

@@ -35,8 +35,8 @@ class LR1Parser:
             
             token = tokens[0]
             current_state_actions = self.action_table[states_id_stack[-1]]
-            print(token,current_state_actions)
-            print(tokens_stack)
+#            print(token,current_state_actions)
+#           print(tokens_stack)
             #TESTING
             if(token == TokenType.tokLoop):
                 print('')
@@ -47,6 +47,7 @@ class LR1Parser:
                     f'Unexpected token {token.value} with value {token.lexeme}, line {token.line +1}')
 
             action = current_state_actions[token.value]
+          #  print(action)
             if action[0] == 'OK':
                 return result_list
 
@@ -59,6 +60,7 @@ class LR1Parser:
             # Apply a REDUCE Action
             else:
                 prod = grammar_prod[action[1]]
+                print(prod)
                 # if prod.ast_node_builder is not None:
                 #     prod.ast_node_builder(tokens_stack, ast)
 

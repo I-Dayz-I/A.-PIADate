@@ -9,5 +9,5 @@ def get_result(List):
     pars = lr1.LR1Parser(gr)
     print('Tables were created')
     
-    pars.parse(List)
+    return pars.parse(List)
     print('things were parrsed')
