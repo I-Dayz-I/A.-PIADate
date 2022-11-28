@@ -680,7 +680,7 @@ class ProgramNode(ClassNode):
         head=None
         while indexProduc[0]<len(productionList) :
             head=productionList[indexProduc[0]].head
-            if productionList[indexProduc].components[0]==TokenType.tokClosedBracket:
+            if productionList[indexProduc[0]].components[0]==TokenType.tokClosedBracket:
                 break
             indexProduc[0]+=1
             #esto se come ciertas producciones
