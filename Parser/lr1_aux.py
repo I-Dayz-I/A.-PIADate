@@ -26,6 +26,10 @@ class Automata:
 
         initial_state = State(initial_items[start])
         initial_state.build(initial_items)
+        
+                        
+
+
 
         list_states = [initial_state]
         dict_states = {initial_state: initial_state}
@@ -71,33 +75,55 @@ class State:
         return self._repr
 
     def build(self, initial_items: Dict[NonTerminal, List[LR1Item]]):
+        
+        #Getting the extended grammar index
         aux = self.list_items[:]
+        #aux = S -> program
+
 
         while len(aux) > 0:
+            
+            #getting the first item in aux , and removing them from it.
             item = aux[0]
             aux = aux[1:] if len(aux) >= 1 else []
+            
+            #getting the symbol that this item is gonna recieve (it can be a Terminal or NonTerminal)
             sym = item.get_symbol_at_dot()
             b = {item}
+            
+            #if I already look throug this full item continue to the next one
             if item.dot_index == len(item.production.symbols):
                 continue
+            
+            #if the the symbol is already in the dict, just add this new item
             if sym in self.expected_symbols:
                 self.expected_symbols[sym].add(item)
+                
+            #else add the symbol and the production
             else:
                 self.expected_symbols[sym] = {item}
-            
-            if isinstance(sym,bool):
-                print('here')
+        
+            if(sym.name == 'comparer'):
+                print('comparer')
 
+
+            #if the symbol is a non terminal
             if not sym.is_terminal():
+                
+                #look for its initial item
                 for i in initial_items[sym]:
+                    
+                    #if I already look throug this full item continue to the next one
                     if item.dot_index + 1 == len(item.production.symbols):
                         lookahead = item.lookahead
                     else:
                         lookahead = item.production.symbols[item.dot_index + 1]
+                        
                     new_item = LR1Item(i.production, i.dot_index, lookahead)
                     if new_item not in self.items:
                         self.items.add(new_item)
-                        aux.append(new_item)
+                        aux.append(new_item)            
+        print('finish state building')
 
     def set_go_to(self, sym: Symbol, dict_states, list_states, aux: List, initial_items):
         new_items = []

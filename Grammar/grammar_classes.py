@@ -187,31 +187,10 @@ _Epsilon = Terminal('epsilon',None)
 _Insert = Terminal('insertDicc',TokenType.tokInsert)
 _EOF = Terminal('EOF',TokenType.EOF)
 
-pow_nt = NonTerminal("pow")
-disjunction = NonTerminal("disjunction")
-conjunction = NonTerminal("conjunction")
-negation = NonTerminal("negation")
-bfs_start = NonTerminal('bfs_start')
-statements = NonTerminal('statements')
-statement = NonTerminal('statement')
-comparison = NonTerminal('comparison')
-expression = NonTerminal('expression')
-expressions = NonTerminal('expressions')
-fun_def = NonTerminal('fun_def')
-if_def = NonTerminal('if_def')
-elif_def = NonTerminal('elif_def')
-else_def = NonTerminal('else_def')
-while_def = NonTerminal('while_def')
+
 #type_nt = NonTerminal('type')
 atom = NonTerminal('atom')
-params = NonTerminal('params')
-sum_nt = NonTerminal("sum")
 term = NonTerminal('term')
-basic = NonTerminal('basic')
-fun_type = NonTerminal('fun_type')
-list_nt = NonTerminal('List')
-assign_nt = NonTerminal('assign')
-return_nt = NonTerminal('return')
 delete = NonTerminal('delete')
 program = NonTerminal('program')
 stat_list =  NonTerminal('stat_list')
@@ -241,9 +220,9 @@ params_list = NonTerminal('params_list')
 params_list_fix = NonTerminal('params_list_fix')
 type = NonTerminal('type')
 expr = NonTerminal('expr')
-expr_fix = NonTerminal('expr_fix')
+fix_expr = NonTerminal('fix_expr')
 term = NonTerminal('term')
-term_fix = NonTerminal('term_fix')
+fix_term = NonTerminal('fix_term')
 factor = NonTerminal('factor')
 atom = NonTerminal('atom')
 comparer = NonTerminal('comparer')
@@ -354,7 +333,7 @@ type += Production([_Bool])
 
 type += Production([_None])
 
-expr += Production([term,expr_fix])
+expr += Production([term,fix_expr])
 
 # expr += Production([term,_Sub,expr])
 
@@ -362,13 +341,13 @@ expr += Production([term,expr_fix])
 
 # expr += Production([term])
 
-expr_fix += Production([_Sum,expr]) 
+fix_expr += Production([_Sum,expr]) 
 
-expr_fix += Production([_Sub,expr]) 
+fix_expr += Production([_Sub,expr]) 
 
-expr_fix += Production([comparer,expr]) 
+fix_expr += Production([comparer,expr]) 
 
-expr_fix += Production([_Epsilon]) 
+fix_expr += Production([_Epsilon]) 
 
 
 #HACER UN FIX PARA TERM
@@ -376,13 +355,13 @@ expr_fix += Production([_Epsilon])
 
 # term += Production([factor,term,_Div])
 
-term += Production([factor,term_fix])
+term += Production([factor,fix_term])
 
-term_fix += Production([_Div,term])
+fix_term += Production([_Div,term])
 
-term_fix += Production([_Mul,term])
+fix_term += Production([_Mul,term])
 
-term_fix += Production([_Epsilon])
+fix_term += Production([_Epsilon])
 
 factor += Production([atom])
 
@@ -443,8 +422,8 @@ insert_dic += Production([_Insert, _OpenParen,args_list, _ClosedParen])
 
 nonTermList = [delete,program,stat_list,stat_list_fix,stat,override_expr,var_reasign,return_exp,continue_exp,break_exp,let_dec,func_dec,print_stat,condictional_stat
             ,if_stat,else_fix,else_stat,loop_stat,lenguage_funtion,move,insert,all_types,leng_type,args_list,args_list_fix,params_list,params_list_fix,type,expr,term,
-            factor,atom,comparer,func_call,dic_func,dic_dec,search_dic,recieve_dic,insert_dic,pow_nt,disjunction,conjunction,negation,bfs_start,statements,statement,comparison,expression,expressions
-            ,fun_def,if_def,elif_def,else_def,while_def,atom,params,sum_nt,term,term_fix,expr_fix,factor,basic,fun_type,list_nt,assign_nt,return_nt]
+            factor,atom,comparer,func_call,dic_func,dic_dec,search_dic,recieve_dic,insert_dic,
+          atom,term,fix_term,fix_expr,factor]
 
 def GetGrammar() ->Grammar :
     fullGrammar = Grammar(nonTermList,program)
