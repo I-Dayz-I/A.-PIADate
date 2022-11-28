@@ -31,8 +31,17 @@ class LR1Parser:
         result_list = []
 
         while len(tokens) > 0:
+            
+            
             token = tokens[0]
             current_state_actions = self.action_table[states_id_stack[-1]]
+            print(token,current_state_actions)
+            print(tokens_stack)
+            #TESTING
+            if(token == TokenType.tokLoop):
+                print('')
+            #TESTING
+            
             if token.value not in current_state_actions:
                 raise Exception(
                     f'Unexpected token {token.value} with value {token.lexeme}, line {token.line +1}')

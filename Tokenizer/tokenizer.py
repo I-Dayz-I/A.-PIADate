@@ -94,9 +94,9 @@ def readNumeric(chain, currentPos,mytokens,line,column):
     #    return-1
     
     if point==0:
-        mytokens.append(tokens.Token(comp_globals.TokenType.tokInt,line,column,currentToken))
+        mytokens.append(tokens.Token(comp_globals.TokenType.tokNumber,line,column,currentToken))
     else:
-        mytokens.append(tokens.Token(comp_globals.TokenType.tokDouble,line,column,currentToken))
+        mytokens.append(tokens.Token(comp_globals.TokenType.tokNumber,line,column,currentToken))
     return currentPos
 
 
