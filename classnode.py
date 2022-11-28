@@ -1148,21 +1148,25 @@ class elseNode(ClassNode):
 #ffffffff       
 #listo
 class IdNode(ClassNode):
-    def __init__(self):
+    def init(self):
         self.id = None
-        
 
         self.RT = None
         self.ET = None
 
     def Eval(self):
-        return self.id
+        if self.defineOrCall == "call":
+            return self.context.retVar(self.id)
 
     def transpilar(self):
         return str(self.id)
 
-    def validateNode(self, context):
-        return self.id is str
+    def validateNode(self):
+        if self.defineOrCall == "call":
+            if self.funcOrVar == "var":
+                return self.context.retVar(self.id) != None
+
+        
     
     #primer termino                                              "valor"
     def build_ast(self,context,id,funcOrVar,defineOrCall,valType="referencia"):
@@ -1275,4 +1279,276 @@ class PrintNode(ClassNode):
         self.context = context
         indexProduc[0]+=1
         self.args = eatExpression(productionList,indexProduc,self.context)
+
+
         
+
+#------------------ Nodes of Chess---------------------------------------------------
+
+
+
+#"move": [[TokeTypes.tokMove, TokeTypes.tokOpenParen,"args_list", TokeTypes.tokClosedParen]],
+class MoveNode(ClassNode):
+    def init(self):
+        self.pos1x = None
+        self.pos1y = None
+
+        self.pos2x = None
+        self.pos2y = None
+
+        self.board = None
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self,context):
+        x1 = self.pos1x.Eval() 
+        y1 = self.pos1y.Eval()
+
+        x2 = self.pos2x.Eval()
+        y2 = self.pos2y.Eval()
+        
+        return self.board.move_pos(x1,y1,x2,y2)
+    
+    def validateNode(self):
+        if not self.posx.ValidateNode() or not self.posy.ValidateNode():
+            return False
+        
+        if not self.pieza.ValidateNode() or self.board.ValidateNode():
+            return False
+
+        return True
+
+
+    def transpilar(self):
+        s = "move(" + self.board.transpilar() + "," + self.pos1x.transpilar()
+        s += "," + self.pos1y.transpilar() + "," + self.pos2x.transpilar() + "," + self.pos2y.transpilar() + ")"
+        return s
+
+    def build_ast(self,productionList,indexProduc,context):
+        self.context = context
+
+        indexProduc[0]+=1
+        args = eatArgList(productionList,indexProduc,context)
+
+        self.board = args[0]
+        self.pos1x = args[1]
+        self.pos1y = args[2] 
+        self.pos2x = args[3]
+        self.pos2y = args[4]
+
+class PieceNode(ClassNode):
+    def init(self):
+        self.fmov=None
+        self.color=None
+        self.tipo=None
+
+
+    def Eval(self):
+        return
+    
+    def validateNode(self):
+        return self.fmov.ValidateNode()
+
+
+    def transpilar(self):
+        return  "Piece("+str(self.fmov.id.name)+","+str(self.color)+","+ self.tipo+ ")" 
+
+    def build_ast(self,fmov,color, tipo,context):
+        self.context = context
+        self.fmov = fmov
+        self.color = color
+        self.tipo = tipo
+ 
+class BoardNode(ClassNode):
+    def init(self):
+        self.id=None
+        self.x=None
+        self.y=None
+        self.table = None
+
+
+    def Eval(self,context):
+        return board(self.x,self.y)
+    
+    def validateNode(self):
+        if not self.x.validateNode() or not self.y.validateNode():
+            return False
+        if self.context.checkFunc(self.id,["board"]):
+            return False
+        return True
+
+
+    def transpilar(self):
+        return  "board("+str(self.x)+str(self.y)+ ")" 
+
+    def build_ast(self,x,y,context):
+        self.context = context
+        self.x = x
+        self.y = y
+
+        self.table = []
+        for i in range(self.x):
+            self.table.append([])
+            for j in range(self.y):
+                self.table[j] = None
+
+
+
+
+#"createdBoard": [[TokeTypes.tokMove, TokeTypes.tokOpenParen,"args_list", TokeTypes.tokClosedParen]],
+class CreatedBoardNode(ClassNode):
+    def init(self):
+        self.id=None
+        self.board = None
+
+
+    def Eval(self):
+        return board(self.board.x,self.board.y)
+    
+    def validateNode(self):
+        if self.context.checkFunc(self.id,[BoardNode]):
+            return False
+        return self.board.validateNode()
+
+
+    def transpilar(self):
+        return  self.id + " = " + self.board.transpilar() 
+
+    def build_ast(self,productionList,indexProduc,context):
+        self.context = context
+
+        #creando id
+        idn=IdNode()
+        #self,id,funcOrVar,defineOrCall,valType=None
+        idn.build_ast(productionList[indexProduc][0].components[1],"func","define",None)
+
+        indexProduc[0]+=1
+        salida= eatArgList(productionList,indexProduc,context)
+
+        x=salida[0]
+        y=salida[1]
+        self.board = BoardNode()
+        self.board.build_ast(x,y,self.context)
+
+        if self.context.retVar(self.id.name) != None:
+            self.context.define_var(self.id.name, BoardNode, self.board)
+
+
+class InsertNode(ClassNode):
+    def init(self):
+        self.posx = None
+        self.posy = None
+        self.pieza = None
+        self.board = None
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self):
+        posx = self.posx.Eval()
+        posy = self.posy.Eval()
+        
+        self.board.table[posx][posy] = self.pieza
+    
+    def validateNode(self):
+        if not self.posx.ValidateNode() or not self.posy.ValidateNode():
+            return False
+        
+        if not self.pieza.ValidateNode() or self.board.ValidateNode():
+            return False
+
+        return True
+
+    def transpilar(self):
+        return  "insert(" + self.pieza.transpilar() + "," + self.posx.transpilar() + "," + self.posy.transpilar() + ")"
+
+    def build_ast(self,productionList,indexProduc,context):
+        self.context = context
+
+        indexProduc[0]+=1
+        args = eatArgList(productionList,indexProduc,context)
+
+        self.pieza = args[0]
+        self.posx = args[1]
+        self.posy = args[2]
+
+
+class DeleteNode(ClassNode):
+    def init(self):
+        self.posx = None
+        self.posy = None
+        self.pieza = None
+        self.board = None
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self):
+        posx = self.posx.Eval()
+        posy = self.posy.Eval()
+
+        self.board.table[posx][posy] = None
+
+    
+    def validateNode(self):
+        if not self.posx.ValidateNode() or not self.posy.ValidateNode():
+            return False
+        
+        if not self.pieza.ValidateNode() or self.board.ValidateNode():
+            return False
+
+        return True
+
+    def transpilar(self):
+        return  "delete(" + self.pieza.transpilar() + "," + self.posx.transpilar() + "," + self.posy.transpilar() + ")"
+
+
+    def build_ast(self,productionList,indexProduc,context):
+        self.context = context
+
+        indexProduc[0]+=1
+        args = eatArgList(productionList,indexProduc,context)
+
+        self.pieza = args[0]
+        self.posx = args[1]
+        self.posy = args[2]
+            
+class CreatePieceNode(ClassNode):
+    def init(self):
+        self.id=None
+        self.piece = None
+
+
+    def Eval(self):
+        return
+    
+    def validateNode(self):
+        if self.context.checkFunc(self.id,[PieceNode]):
+            return False
+        if not self.piece.validateNode():
+            return False
+        return True
+
+    def transpilar(self):
+        return  self.id + " = " + self.piece.transpilar() 
+
+    def build_ast(self,productionList,indexProduc,context):
+        self.context = context
+
+        #creando id
+        idn=IdNode()
+        #self,id,funcOrVar,defineOrCall,valType=None
+        idn.build_ast(productionList[indexProduc][0].components[1],"func","define",None)
+
+        indexProduc[0]+=1
+        args= eatArgList(productionList,indexProduc,context)
+
+        fmov=args[0]
+        color=args[1]
+        tipo=args[2]
+        self.piece = PieceNode()
+        self.piece.build_ast(fmov,color,tipo,self.context)
+
+        if self.context.retVar(self.id.name) != None:
+            self.context.define_var(self.id.name, BoardNode, self.board)
