@@ -671,9 +671,10 @@ class ProgramNode(ClassNode):
                 return False
             
     #["override_expr"],["let_dec"],["func_dec"],["var_reasign"],["print_stat"],["condictional_stat"],["loop_stat"],["lenguage_funtion"],["break_exp"],["return_exp"],["continue_exp"],["epsilon"]
-    def build_ast(self,productionList,context,indexProduc=[0]):
+    def build_ast(self,productionList,context,indexProduc=[1]):
         self.context = context
-
+        
+        
         #indexProduc[0]=0
         self.ListStatement=[]
         self.buildPosible()
@@ -684,7 +685,7 @@ class ProgramNode(ClassNode):
                 break
             indexProduc[0]+=1
             #esto se come ciertas producciones
-            if head in self.posibleProductions:
+            if head.name in self.posibleProductions:
                 
                 #arreglar esto
                 node=self.posibleProductions[head]()
