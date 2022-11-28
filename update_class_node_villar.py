@@ -8,6 +8,7 @@ from platform import node
 from tokenize import Double
 
 from numpy import true_divide
+from classnode import Declare_DicNode, Insert_dicNode, Recieve_dicNode, Search_dicNode
 
 from comp_globals import TokeTypes 
 import enum
@@ -1632,10 +1633,11 @@ def fillComparer():
 
 diccFunDicc={}
 def fillDiccFun():
-    diccFunDicc["search_dic"]=RecieveDiccNode
-    diccFunDicc["recieve_dic"]=SearchDiccNode
-    diccFunDicc["insert_dic"]=InsertDiccNode
-    diccFunDicc["dic_dec"]=DeclaretDiccNode
+    diccFunDicc["search_dic"]=Recieve_dicNode
+    diccFunDicc["recieve_dic"]=Search_dicNode
+    diccFunDicc["insert_dic"]=Insert_dicNode
+    diccFunDicc["dic_dec"]=Declare_DicNode
+    
     
     
 

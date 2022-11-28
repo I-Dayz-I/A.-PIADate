@@ -1,3 +1,4 @@
+from pydoc import classname
 from comp_globals import TokeTypes 
 
 
@@ -122,7 +123,7 @@ class Context():
 
 
 #LISTO
-class SumNode(OperatorNode):
+class SumNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -152,7 +153,7 @@ class SumNode(OperatorNode):
         self.ET=self.Right.ET
         
 #listo
-class SubNode(OperatorNode):
+class SubNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -181,7 +182,7 @@ class SubNode(OperatorNode):
         self.ET=self.Right.ET
     
 #listo
-class MulNode(OperatorNode):
+class MulNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -207,7 +208,7 @@ class MulNode(OperatorNode):
         self.ET=self.Right.ET
 
 #listo    
-class DivNode(OperatorNode):
+class DivNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -235,7 +236,7 @@ class DivNode(OperatorNode):
         self.RT=self.Left.RT
         self.ET=self.Right.ET
 #listo
-class ModNode(OperatorNode):
+class ModNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -261,7 +262,7 @@ class ModNode(OperatorNode):
         self.ET=self.Right.ET
         
 #listo
-class PowNode(OperatorNode):
+class PowNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -291,7 +292,7 @@ class PowNode(OperatorNode):
 #--------------------------------------------------------------------------- #
 
 #listo
-class EqualNode(CompareNode):
+class EqualNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -321,7 +322,7 @@ class EqualNode(CompareNode):
         self.ET=self.Right.ET
     
 #listo    
-class NotEqualNode(CompareNode):
+class NotEqualNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -350,7 +351,7 @@ class NotEqualNode(CompareNode):
         self.ET=self.Right.ET
 
 #listo    
-class LoENode(CompareNode):
+class LoENode(ClassNode):
     def __init__(self):
         self.Left=None
         self.Right=None
@@ -380,7 +381,7 @@ class LoENode(CompareNode):
         self.ET=self.Right.ET
 
 #listo
-class GoENode(CompareNode):
+class GoENode(ClassNode):
     def __init__(self):
         self.Left=None
         self.Right=None
@@ -410,7 +411,7 @@ class GoENode(CompareNode):
         self.ET=self.Right.ET
 
 #listo
-class GreaterNode(CompareNode):
+class GreaterNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -440,7 +441,7 @@ class GreaterNode(CompareNode):
         self.ET=self.Right.ET
 
 #listo
-class LessNode(CompareNode):
+class LessNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -707,10 +708,62 @@ class ProgramNode(ClassNode):
         #["die"],["modify"],["evolve"],["add"],["move"],["eat"],["create"]
         
         self.posibleProductions["break_exp"]=BreakNode
-        self.posibleProductions["return_exp"]=returnNode
+        self.posibleProductions["return_exp"]=ReturnNode
         self.posibleProductions["continue_exp"]=ContinueNode
     
+
+class ReturnNode(ClassNode):
+    def __init__(self):
+        self.fun = None
+        self.salida = None
+        self.validatefun = False
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self):
+        val_salida = []
+
+        count = 0
+        for node_salida in self.salida:
+            val_salida.append(node_salida.Eval())
+            if type(val_salida[count]) != self.fun.argstypes[count]:
+                raise Exception("La salida " + count + " de la función " + self.fun.name + " no coincide con el tipo esperado")
+
+        return val_salida
     
+    def validateNode(self):
+        if not self.validatefun:
+            return False
+
+        for node_salida in self.salida:
+            if not node_salida.validateNode():
+                return False
+
+        return True
+
+
+    def transpilar(self):
+        return  "return " + self.salida.transpilar()
+
+    def build_ast(self,productionList,indexProduc,context):
+        self.context = context
+
+        indexProduc[0]+=1
+        self.salida= eatExpression(productionList,indexProduc,context)
+
+        contexttemp = self.context
+        
+        while contexttemp == None:
+            classnode = contexttemp.classNode
+
+            if type(classnode) == FucNode:
+                self.validatefun = True
+                self.fun = classnode
+                break
+
+            contexttemp = contexttemp.fatherContext
+
 #listo
 class ContinueNode(ClassNode):
     def init(self):
@@ -1233,7 +1286,7 @@ def eatArgList(productionList,indexProduc,context):
 def eatType(productionList,indexProduc):
     return productionList[indexProduc][0].components[0]
 
-class func_callNode(StatementNode):
+class func_callNode(ClassNode):
     def __init__(self,value = None,hijos = None):
         super().__init__(value,hijos)
         
@@ -1280,6 +1333,273 @@ class PrintNode(ClassNode):
         indexProduc[0]+=1
         self.args = eatExpression(productionList,indexProduc,self.context)
 
+
+# ----------------- DicNode ---------------------------------------------------------#
+
+class DicNode(ClassNode):
+    def __init__(self):
+        self.idnode = None
+        self.typeindex = None
+        self.typeval = None
+        self.len = 0
+        self.llaves = []
+        self.valores = []
+        
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self):
+        return
+    
+    def validateNode(self):
+        if not self.idnode is IdNode or not self.idnode.validateNode(self.context):
+            return False
+
+        if not self.typeindex.validateNode() or  not self.typeval.validateNode():
+            return False
+
+        for i in range(len(self.llaves)):
+            if not self.valores[i].validateNode():
+                return False
+            if self.typeindex != NumberNode:
+                if not self.llaves[i].validateNode():
+                    return False
+
+        return True
+
+        
+
+    def transpilar(self):
+        text = "{ "
+        if self.typeindex == NumberNode:
+            for i in range(0,len(self.llaves)-1):
+                text += str(self.valores[i])
+                if i < len(self.llaves)-1:
+                    text += ", "
+
+        else:
+            for i in range(0,len(self.llaves)-1):
+                text +=  str(self.llaves[i]) + " : " + str(self.valores[i])
+                if i < len(self.llaves)-1:
+                    text += ", "
+
+        text += " }"            
+    
+    def build_ast(self,context, idnode,typeindex, typeval, llaves = [], valores = []):
+        self.context = context
+        self.idnode = idnode
+
+        self.typeindex = typeindex
+        self.typeval = typeval
+        self.llaves = llaves
+        self.valores = valores
+
+class Declare_DicNode(ClassNode):
+    def __init__(self, context):
+        self.dicNode = None        
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self):
+        self.context.define_var(self.dicNode.idnode, DicNode, self.dicNode)
+    
+    def validateNode(self):
+        if not self.idnode is IdNode:
+            return False
+
+        return self.dicNode.validateNode()
+
+    def transpilar(self):
+        return str(self.DicNode.idnode) + " = []"
+    
+    def build_ast(self,productionList,context,indexProduc=[0]):
+        self.context = context
+
+        self.dicNode = DicNode()
+        self.type = self.DicNode
+
+        typeindex = productionList[indexProduc[0]].components[3]
+        typeval = productionList[indexProduc[0]].components[4]
+
+        idn = IdNode()
+        idn.build_ast(productionList[indexProduc[0]].components[1].head,"var","define",self.type)
+        self.idnode = idn
+
+        self.ET=self.idnode.RT    
+
+        self.dicNode.build_ast(self.context, idn, typeindex, typeval)
+        
+
+class Recieve_dicNode(ClassNode):
+    def __init__(self, context):
+        self.idnode = None
+        self.idx = None
+        
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self):
+        idx = self.idx.Eval()
+        
+        if type(idx) != self.dic.typeindex:
+            raise Exception("El tipo del index de recepcion del diccionario es erroneo")
+
+        for i in range(self.dic.len):
+            if self.dic.llaves[i] == idx:
+                return self.dic.valores[i]
+    
+    def validateNode(self, context):
+        if not self.idnode is IdNode:
+            return False
+
+        validate = self.idnode.validateNode(self.context) and self.val.validateNode(self.context)
+        if not validate:
+            return False
+
+        self.dic = self.context.retVar(self.id_node.name)
+        return self.dic != None
+
+    def transpilar(self):
+        text = ""
+        text += self.idnode.transpilar()
+
+        text += "["
+        text += self.idx.transpilar()
+        text += "]"
+
+        return text 
+
+    def build_ast(self,productionList,indexProduc,context):
+        self.context = context
+
+        idn = IdNode()
+        idn.build_ast(productionList[indexProduc[0]].components[1].head,"var","define",self.type)
+        self.idnode = idn
+
+        self.ET=self.idnode.RT  
+
+        indexProduc[0]+=1
+        val = eatArgList(productionList,indexProduc,context)
+        if len(val) != 1:
+            raise Exception("Longitud excedida en Recieve de DicNode")
+
+        self.idx = val[0]
+        self.RT=self.idx.RT
+        
+class Search_dicNode(ClassNode):
+    def __init__(self):
+        self.idnode = None
+        self.idx = None
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self):
+        idx = self.idx.Eval()
+        
+        if type(idx) != self.dic.typeindex:
+            raise Exception("El tipo del index en el search del diccionario es erroneo")
+
+        for i in range(self.dic.len):
+            if self.dic.llaves[i] == idx:
+                return True
+
+        return False
+    
+    def validateNode(self):
+        if not self.idnode is IdNode:
+            return False
+
+        validate = self.idnode.validateNode(self.context) and self.val.validateNode(self.context)
+        if not validate:
+            return False
+
+        self.dic = self.context.retVar(self.id_node.name)
+        return self.dic != None
+
+    def transpilar(self):
+        return self.val.transpilar() + " in " + self.idnode.transpilar()
+
+    def build_ast(self,productionList,indexProduc,context):
+        self.context = context
+        
+        idn = IdNode()
+        idn.build_ast(productionList[indexProduc[0]].components[1].head,"var","define",self.type)
+        self.idnode = idn
+
+        self.ET=self.idnode.RT  
+
+        indexProduc[0]+=1
+
+        val = eatArgList(productionList,indexProduc,context)
+        if len(val) != 1:
+            raise Exception("Longitud excedida en Search de DicNode")
+
+        self.idx = val[0]
+        self.RT=self.idx.RT
+
+        
+
+class Insert_dicNode(ClassNode):
+    def __init__(self):
+        self.idnode = None
+        self.idx = None
+        self.val = None
+        
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self):
+        idx = self.idx.Eval()
+        val = self.val.Eval()
+
+        if type(idx) != self.dic.typeindex:
+            raise Exception("El tipo del index de insercción es erroneo")
+
+        if type(val) != self.dic.typeval:
+            raise Exception("El tipo del valor a insertar en el diccionario es erroneo")
+
+        self.dic.llaves.append(idx)
+        self.dic.valores.append(val)
+        self.dic.len += 1
+        
+    
+    def validateNode(self):
+        if not self.idnode is IdNode:
+            return False
+
+        validate = self.idnode.validateNode(self.context) and self.val.validateNode(self.context)
+        if not validate:
+            return False
+
+        self.dic = self.context.retVar(self.id_node.name)
+        return self.dic != None
+
+    def transpilar(self):
+        return  self.idnode.transpilar() +"[" + self.idx.transpilar() +"] = "+self.val.transpilar() + ")"
+
+    def build_ast(self,productionList,indexProduc,context):
+        self.context = context
+        
+        idn = IdNode()
+        idn.build_ast(productionList[indexProduc[0]].components[1].head,"var","define",self.type)
+        self.idnode = idn
+
+        self.ET=self.idnode.RT  
+
+        indexProduc[0]+=1
+
+        val = eatArgList(productionList,indexProduc,context)
+        if len(val) != 2:
+            raise Exception("Longitud excedida en Insert de DicNode")
+
+        self.idx = val[0]
+        self.val = val[1]
+        self.RT=self.idx.RT
 
         
 
@@ -1552,3 +1872,177 @@ class CreatePieceNode(ClassNode):
 
         if self.context.retVar(self.id.name) != None:
             self.context.define_var(self.id.name, BoardNode, self.board)
+
+
+
+class VectorialNode(ClassNode):
+    def __init__(self,context):
+        self.ejex = None
+        self.ejey = None
+        self.context = context
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self,context):
+        return (self.ejex,self.ejey)
+    
+    def transpilar(self):
+        return "("+str(self.ejex) + "," +  str(self.ejey)+")"
+
+    def validateNode(self, context):
+        return int.isnumeric(self.ejex) and int.isnumeric(self.ejey)
+        
+        
+
+class NumberNode(ClassNode):
+    def __init__(self,context):
+        self.val = None
+        self.context = context
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self,context):
+        return self.val
+
+    def transpilar(self):
+        return str(self.val)
+
+    def validateNode(self, context):
+        return int.isnumeric(self.val)
+
+    def build_ast(self,value,valtype):
+        self.val=value
+        self.valtype=valtype
+        
+
+class ChainNode(ClassNode):
+    def __init__(self,context):
+        self.chain = None
+        self.context = context
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self,context):
+        return self.chain
+
+    def transpilar(self):
+        return str(self.chain)
+
+    def validateNode(self, context):
+        return self.chain is str
+
+    def build_ast(self,value,valtype):
+        self.val=value
+        self.valtype=valtype
+
+    
+class TrueNode(ClassNode):
+    def __init__(self,context):
+        self.context = context
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self):
+        return True
+
+    def transpilar(self):
+        return str(True)
+
+    def validateNode(self, context):
+        return True
+
+    def build_ast(self,value,valtype):
+        self.val=value
+        self.valtype=valtype
+
+class FalseNode(ClassNode):
+    def __init__(self,context):
+        self.context = context
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self):
+        return False
+
+    def transpilar(self):
+        return str(False)
+
+    def validateNode(self, context):
+        return True
+    
+    def build_ast(self,value,valtype):
+        self.val=value
+        self.valtype=valtype
+
+class NoneNode(ClassNode):
+    def __init__(self,context):
+        self.context = context
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self, context):
+        return None
+
+    def transpilar(self):
+        return str(None)
+
+    def validateNode(self, context):
+        return True
+    
+    def build_ast(self,value,valtype):
+        self.val=value
+        self.valtype=valtype
+
+
+
+
+
+
+
+atomDicc={}
+#[TokeTypes.tokID],["func_call"],[TokeTypes.tokNumber],[TokeTypes.tokChain],[TokeTypes.tokNone],[TokeTypes.tokChain],[TokeTypes.tokTrue],[TokeTypes.tokFalse],["dic_func"],["epsilon"]
+def fillAtom():
+    atomDicc[TokeTypes.tokID]=IdNode
+    
+    atomDicc[TokeTypes.tokNumber]=NumberNode
+    atomDicc[TokeTypes.tokChain]=ChainNode
+    atomDicc[TokeTypes.tokNone]=NoneNode
+    atomDicc[TokeTypes.tokTrue]=TrueNode
+    atomDicc[TokeTypes.tokFalse]=FalseNode
+    #atomDicc["dic_dec"]=dic_func?
+    
+expresionDicc={}
+def fillExpresion():
+    expresionDicc[TokeTypes.tokSub]=FalseNode
+    expresionDicc[TokeTypes.tokSum]=FalseNode
+    
+termDicc={}
+def fillTerm():
+    termDicc[TokeTypes.tokMul]=FalseNode
+    termDicc[TokeTypes.tokDiv]=FalseNode
+
+#[TokeTypes.tokEqual],[TokeTypes.tokNot],[TokeTypes.tokNotEqual],[TokeTypes.tokGreaterOrEqual],[TokeTypes.tokGreater],[TokeTypes.tokLess],[TokeTypes.tokLessOrEqual],[TokeTypes.tokAnd],[TokeTypes.tokOr]
+comparerDicc={}
+def fillComparer():
+    comparerDicc[TokeTypes.tokEqual]=FalseNode
+    comparerDicc[TokeTypes.tokNot]=FalseNode
+    comparerDicc[TokeTypes.tokNotEqual]=FalseNode
+    comparerDicc[TokeTypes.tokGreaterOrEqual]=FalseNode
+    comparerDicc[TokeTypes.tokGreater]=FalseNode
+    comparerDicc[TokeTypes.tokLess]=FalseNode
+    comparerDicc[TokeTypes.tokLessOrEqual]=FalseNode
+    comparerDicc[TokeTypes.tokAnd]=FalseNode
+    comparerDicc[TokeTypes.tokOr]=FalseNode
+
+diccFunDicc={}
+def fillDiccFun():
+    diccFunDicc["search_dic"]=Recieve_dicNode
+    diccFunDicc["recieve_dic"]=Search_dicNode
+    diccFunDicc["insert_dic"]=Insert_dicNode
+    diccFunDicc["dic_dec"]=Declare_DicNode
