@@ -15,6 +15,10 @@ class Token():
         if tokenType == TokenType.tokNumber:
             self.name = 'numeric'
             self.value = 'numeric'
+            
+        if tokenType == TokenType.tokChain:
+            self.name = 'chain'
+            self.value = 'chain'
     
     def __str__(self) -> str:
         return str(self.tokenType)
