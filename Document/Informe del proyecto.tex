@@ -15,13 +15,13 @@
 \maketitle
 \newpage
 \makeindex
-\section{Introducción}
-En este trabajo se propone la creación de una gramática y su compilador, tal que permita la simulación de juegos de tableros; centrandonos especificamente en el ajedrez. Para el manejo de este sistema se implementó un lenguaje de dominio específico (DSL, por sus siglas en ingles Domain Specific Language).
 
 \section{Gramática}
+En este trabajo se propone la creación de una gramática y su compilador, tal que permita la simulación de juegos de tableros; centrandonos especificamente en el ajedrez. Para el manejo de este sistema se implementó un lenguaje de dominio específico (DSL, por sus siglas en ingles Domain Specific Language).
+
 El lenguaje que implementamos permite la creación de código de alto nivel parecido al que observamos a lo largo de la industria. En su creación se encuentra grupos de instrucciones como la definición de de variable y funciones, comparativas y ciclos. En este lenguaje los contextos se encontraran encerrados entre llaves , y todos las posibles oraciones serán seguidas de un punto y coma. En total el lenguaje cuenta con alrededor de 80 producciones, 42 no terminales y 60 terminales. La estructura de esta gramática se diseñó teniendo en cuenta la creación de un parser \textbf{LR(1)}\footnote{Este parser será discutido más adelante.}.
 \subsection{Clases de la Gramática}
-Para el trabajo e implementacion de la gramática se utilizaron varias clases que facilitaron el trabajo a la hora de la declaracion y resolucion. Para la representacion completa del lenguaje fueron utilizadas 5 clases: \textit{Terminal, NoTerminal, Grammar , Production , Symbol}.
+Para el trabajo e implementacion de la gramática se utilizaron varias clases que facilitaron el trabajo a la hora de la declaracion y resolucion. Para la representacion completa del lenguaje fueron utilizadas 5 clases: \textit{Terminal, NoTerminal, Grammar , Production , Symbol}. Específicamente la clase \textit{Grammar} es generada a partir de una lista de NoTerminales
 
 \subsubsection{Symbol}
 La clase \textit{Symbol} es utilizada como clase abstracta que permite englobar cualquier componente que forme parte de alguna producción de la gramática. Más importante, en esta clase se encuentra el metodo dinámico \textit{is\_terminal}, el cual me permite identificar con que tipo de instancia hereditaria se está trabajando. Los métodos \textit{\_\_repr\_\_}\footnote{Este metodo sera redefinido en multiples clases, simpre con el objetivo de realizar el seguimiento del código en ejecución más fácil.} son implementados para mostrar de manera mas exacta los valores con los que se trabaja.
@@ -46,13 +46,96 @@ Esta clase es la contraparte de la anterior, con ella se instancian todas los \t
 \lstinputlisting[language=Python, firstline = 73 , lastline = 87,caption = Definición de la Clase No Terminal]{script_example/grammar_classes.py}
 
 
-\subsection{Production}
-La clase \textit{Production) esta simplemente definida como una lista de \textit{Symbols} y una propiedad llamada \textit{head} que es un \textit{NoTerminal}. La lista de elementos es declarada a la hora de instanciar la producción, sin embargo, la cabeza de ella será actualizada a la hora de añadir dicha produción al no terminal correspondiente.
+\subsubsection{Production}
+La clase \textit{Production} esta simplemente definida como una lista de \textit{Symbols} y una propiedad llamada \textit{head} que es un \textit{NoTerminal}. La lista de elementos es declarada a la hora de instanciar la producción, sin embargo, la cabeza de ella será actualizada a la hora de añadir dicha produción al no terminal correspondiente.
   
- 
+\lstinputlisting[language=Python, firstline = 39 , lastline = 55,caption = Definición de la Clase Production]{script_example/grammar_classes.py}  
+
+\lstinputlisting[language=Python, firstline = 263 ,lastline = 263,caption = Ejemplo de añadir una producció a un no Terminal.]{script_example/grammar_classes.py}  
     
     
 \section{Tokenizer}
+El tokenizer es una pequeña maquina de estados particular para nuestro lenguaje el cual es capaz de leer cualquier token de este. Recibe un string con la cadena en el lenguaje y va iterando por las posiciones de este. 
+
+\begin{itemize}
+
+\item En caso de encontrarse un alfanumérico entra a la maquina de estados de alfanumérico, comprueba si es una palabra clave o no en un diccionario de palabras clave, y determina que token utilizar entre identificador o alguna palabra reservada del lenguaje.
+
+\item  En caso de encuentra números entra al estado reconocedor de números el cual determina si son números flotantes o enteros.
+
+\item  Existe un estado para reconocer strings
+
+\item  Existe un estado que si recibe un símbolo como { + , = , / , - , <=}, los reconocerá como símbolos del sistema
+
+\item  Posee un estado para leer comentarios
+
+\end{itemize}
+En caso de estar leyendo un token y un estado se trabe y no sepa a que estado moverse texto aun por reconocer este reconocerá el error.
+
+Todo esto devolverá una cadena de tokens que serán usados en todas las etapas en lo adelante.
+
+\section{Parser}
+El parser implementado es el LR(1) can\'onico, el cual es un analizador sintáctico LR (k) para $k=1$, es decir, con un único terminal de búsqueda anticipada. El atributo especial de este analizador es que cualquier gramática LR (k) con $k>1$ se puede transformar en una gramática LR (1).
+		Para la implementaci\'on de este se definieron varias clases, entre ellas la clase  \texttt{LR1Item} que representa la definici\'on de Item LR(1) e Item SLR, para este \'ultimo se permite la no entrada del par\'ametro \texttt{lookahead}.
+		
+		La clase \texttt{LR1Item} tiene como atributos una producci\'on, la posici\'on del punto y el terminal lookahead. La posici\'on del punto indica los s\'imbolos que han sido recorridos y los que no, los que han sido recorridos son los s\'imbolos cuyas posiciones son menores que la posici\'on del punto y los que no son los s\'imbolos cuyas posiciones son mayor o igual que la del punto.
+		
+Otra de las clases implementadas es la clase \texttt{State} que representa un estado  del aut\'omata LR(1). El constructor de esta clase recibe como par\'ametro una lista de items LR1, a partir de los cuales el m\'etodo \texttt{build} de la propia clase construir\'a el estado inicial. Otro de los m\'etodos implementados en esta es el \texttt{set\_go\_to}, el cual tiene como funci\'on calcular todas las transiciones a partir de un conjunto de items y un s\'imbolo.
+		
+		Para la representaci\'on del aut\'omata se implement\'o una clase con el mismo nombre. El constructor de esta clase recibe como par\'ametro una gram\'atica. Esta clase al instanciarse crea una lista de estados como atributo de la clase, para llegar a construir esta lista primero se extendiende la gram\'atica mediante el m\'etodo \texttt{extended\_grammar} de la propia clase el cual a\~nade una nueva producci\'on con el s\'imbolo inicial como cabeza \texttt{``S''} el cual pasar\'a a ser el nuevo comienzo de la gram\'atica. Luego se obtiene una lista de no terminales de la gram\'atica y por cada una de las producciones de este se generan los items iniciales, luego a partir de este, el estado inicial, y del estado inicial los pr\'oximos estados para cual se simula una cola utilizando los slices de Python partiendo del estado inicial.
+		
+		
+		Para el manejo de las clases anteriores y creaci\'on de las tablas \texttt{action\_table} y \texttt{go\_to\_table} se implement\'o la clase \texttt{LR1Table}. El constructor de esta clase recibe como par\'ametro una gram\'atica a partir de la cual ser\'an construidas las tablas mencionadas. El m\'etodo \texttt{build\_table} perteneciente a esta clase es el encargado de la construcción de las tablas, estas est\'an representadas por una lista de diccionarios, donde cada posici\'on $i$ de la lista corresponde a un estado de la clase \texttt{Aut\'omata}. Por cada uno de estados son creados dos diccionarios locales, uno de estos almacenar\'a las acciones a realizar y n\'umero de estado pr\'oximo, dado un s\'imbolo, la acci\'on \texttt{SHIFT} se indicar\'a por el caracter inicial de esta acci\'on si el s\'imbolo revisado es un terminal, en caso contrario (No terminal), este es a\~nadido como llave del otro diccionario \texttt{go\_to}, y el valor correspondiente ser\'a el n\'umero del estado de la proxima transici\'on.
+		
+		Luego se procede a analizar los lookaheads, y para esto se define un diccionario de Terminal como llave y lista de items LR1 como valor, luego se chequea si el lookahead est\'a contenido en el diccionario mencionado, en caso de no encontrarse, este es a\~nadido como llave al diccionario de acciones y es asignado la acci\'on \texttt{REDUCE} representada por su caracter inicial \texttt{``R''}  y la producci\'on a la q se deber\'a reducir.
+		
+		En caso de ser detectado el Terminal \texttt{\$} y que la cabeza de la producci\'on sea \texttt{S} (No terminal inicial) entonces se almacena, el terminal como llave y string \texttt{OK} como valor.
+				
+		Para fines de optimizaci\'on el resultado del m\'etodo \texttt{build\_table} se registra en un fichero .json, una vez estos almacenados en el directorio del proyecto, son detectados en un nuevo programa y se evita la reconstrucción de dichas tablas carg\'andolos desde el directorio.
+
+\section{Árbol de Sintaxis Abstracta}
+La construcción del árbol de sintaxis abstracta del lenguaje se basa en la construcción de un Nodo Program. Este nodo tiene como propiedades una lista de nodos de statements secuenciales y son inicializado con valor “nones”. A partir de su construcción es evaluada mediante el médodo build_ast, basado en crear cada nodo statement que actuará como hijo de este programNodo como la lista de nodos statements hijos.
+
+Los statemenents que presentados en el DSL son los siguientes: 
+\begin{enumerate}
+\item Ciclos : nodo de ciclo usado para representar código que deseemos repetir una cierta cantidad de veces. Esta consistirá en una condición que permitirá ejecutar un cuerpo de programa con su propio contexto derivado del contexto padre en el que se anda trabajando. 
+ 
+\item Declarador de variables y re definidor de variables: La creación consiste en una sintaxis de tipo let que recibirá el tipo, identificador y el valor de la expresión a partir de su nodo constructor. Estos let crearán guardaran sus valores en nuestro contexto creado por el creador de este y usado posteriormente en nuestro programa. El redefinidor utiliza un su propio nodo para cambiar el valor de las variables 
+
+\item Declarador y llamadas de funciones: La declaración consiste en un cuerpo de statements creados a base de un identificador  con unas entradas argumentos evaluados a partir de la su constructor y guardados en nuestro contexto, mientras que la llamada de funciones permite llamar a estas siempre  que se pasen los argumentos correctamente
+
+\item Condicionales : Consiste en preguntas de decisión condicionales que llevan como propiedad una condición, un nodo programa como cuerpo a ejecutar en caso de cumplir la condición, en caso contrario se procederá a procesar y operar su hijo el nodo else.
+
+\item Funciones de diccionarios: Permitimos utilizar diccionarios en el lenguaje que den las funcionalidades básicas de buscar, extraer, guardar y definir elementos en estos. Cada operación tiene su propio nodo
+
+\item Para poder visualizar el tablero permitimos la funcionalidad de mostrar elementos en consola con el comando print el cual tiene su propio nodo dedicado.
+
+\item En esta gramática se manejan las operaciones básicas matemáticas como la suma, resta, multiplicación y división
+
+
+\item Este lenguaje presenta la implementación de diccionarios para mayor facilidades a la hora de guardar y trabajar información.
+
+\item Como medio de trabajo con nuestro tablero de ajedrez, tenemos un Board para guardar y trabajar las propiedades de tableros de dos dimensiones y piezas. Estas piezas se ubicaran en el tablero y permitirán  simular un posición en un tablero y crear jugadas a partir del los movimientos definidos en el lenguaje, por defecto se adicionan los movimientos básicos del ajedrez . Además de contar con un método para borrar una posición del tablero y otro para insertar cada una pieza en el tablero independientemente del movimiento. 
+
+\end{enumerate}
+
+Bonus- Este no tiene que ser un lenguaje solo para jugar ajedrez, ya que cada pieza tendrá su tipo de movimiento único que permite la creación de piezas con el movimiento que el usuario o desarrollador decida definir. Para hacer esto a la hora de crear una pieza, justo después de nombrarla y decir su color le pasamos una función de movimiento y esta la adoptara, pudiéndose crear piezas de cualquier juego de tablero
+
+Estructura de un nodo estándar:
+
+Este tiene 4 métodos principales, su constructor, su validador, su transpilador y su evaluador:
+\begin{enumerate}
+
+\item Constructor: Este se encarga de la inicialización de las propiedades. Si una de sus propiedades depende de sus hijos, ejemplo un nodo suma que tiene dos números que sumar, esta sera guardada como la inicialización de un nodo numérico en su hijo derecho y otro similar en su hijo izquierdo.
+ 
+\item Validación:  Este nodo se usa para comprobar que las propiedades de cada nodo cumplan con las restricciones de hijos esperados. Una de las maneras para hacer esto es usa un contexto que se pasa por cada nodo el cual lleva almacenado cada variable declarada en ese ámbito, así como una lista de funciones globales. Este contexto sabe el tipo de retorno de cada elemento que tiene almacenado por lo que puede comprobar por cada nodo si sus hijos comparten tipo con su valor de retorno o al menos su valor esperado.
+
+\item Transpilador: Esta función se encarga de escribir en código de python todo el programa escrito.
+
+\item Evaluador: Esta función se encarga de una vez todo este construido y validado hacer una ejecución del programa.
+
+\end{enumerate}
+
 
 
 \end{document}

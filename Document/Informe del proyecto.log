@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.3) (preloaded format=pdflatex 2022.11.25)  28 NOV 2022 13:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (MiKTeX 22.3) (preloaded format=pdflatex 2022.11.25)  28 NOV 2022 13:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -294,31 +294,98 @@ Overfull \hbox (57.00409pt too wide) in paragraph at lines 77--78
 [][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-) [3])
-Runaway argument?
-{Production) esta simplemente definida como una lista de \textit {Sym\ETC.
-! File ended while scanning use of \textit .
+) [3] (script_example/grammar_classes.py
+consecutive:
+
+Overfull \hbox (69.00421pt too wide) in paragraph at lines 41--42
+[][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+)
+Overfull \hbox (51.00403pt too wide) in paragraph at lines 55--52
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+(script_example/grammar_classes.py
+consecutive:
+) [4]
+Overfull \hbox (1.83496pt too wide) in paragraph at lines 78--80
+[]\OT1/cmr/m/n/10 El par-ser im-ple-men-ta-do es el LR(1) can^^Soni-co, el cual
+ es un ana-li-za-dor sint^^Sacti-
+ []
+
+[5]
+LaTeX Font Info:    Trying to load font information for TS1+cmtt on input line 
+92.
+ (C:\Users\Dayz\AppData\Local\Programs\MiKTeX\tex/latex/base\ts1cmtt.fd
+File: ts1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
+)
+! Missing $ inserted.
 <inserted text> 
-                \par 
-<*> "./Informe del proyecto.tex"
-                                
-I suspect you have forgotten a `}', causing me
-to read past where you wanted me to stop.
-I'll try to recover; but if the error is serious,
-you'd better type `E' or `X' now and fix your file.
+                $
+l.97 ...ón es evaluada mediante el médodo build_
+                                                  ast, basado en crear cada ...
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
 
-! Emergency stop.
-<*> "./Informe del proyecto.tex"
-                                
-*** (job aborted, no legal \end found)
 
- 
+LaTeX Warning: Command \' invalid in math mode on input line 97.
+
+! Please use \mathaccent for accents in math mode.
+\add@accent ... \let \ignorespaces \relax \accent 
+                                                  #1 #2\egroup \ifmmode \els...
+l.97 ... en crear cada nodo statement que actuará
+                                                   como hijo de este program...
+I'm changing \accent to \mathaccent here; wish me luck.
+(Accents are not the same in formulas as they are in text.)
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.98 
+     
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+
+Overfull \hbox (420.9247pt too wide) in paragraph at lines 97--98
+\OT1/cmr/m/n/10 tir de su cons-truc-ci^^Son es eva-lua-da me-dian-te el m^^Sedo
+-do build$[]\OML/cmm/m/it/10 st; basadoencrearcadanodostatementqueactuar[]comoh
+ijodeesteprogramNodocomolalistadenodosstatementshijos:$ 
+ []
+
+[6] [7] (Informe del proyecto.aux
+LaTeX Info: Redefining \. on input line 8.
+LaTeX Info: Redefining \% on input line 8.
+) ) 
 Here is how much of TeX's memory you used:
- 5754 strings out of 478582
- 85097 string characters out of 2844815
- 602026 words of memory out of 3000000
- 23888 multiletter control sequences out of 15000+600000
- 477803 words of font info for 61 fonts, out of 8000000 for 9000
+ 5806 strings out of 478582
+ 86256 string characters out of 2844815
+ 602033 words of memory out of 3000000
+ 23929 multiletter control sequences out of 15000+600000
+ 478268 words of font info for 63 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,8n,62p,707b,1797s stack positions out of 10000i,1000n,20000p,200000b,80000s
-!  ==> Fatal error occurred, no output PDF file produced!
+ 55i,8n,62p,1089b,1797s stack positions out of 10000i,1000n,20000p,200000b,80000s
+ <C:\Users\Dayz\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tctt
+1000.pk> <C:\Users\Dayz\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600
+\tcrm1000.pk><C:/Users/Dayz/AppData/Local/Programs/MiKTeX/fonts/type1/public/am
+sfonts/cm/cmbx10.pfb><C:/Users/Dayz/AppData/Local/Programs/MiKTeX/fonts/type1/p
+ublic/amsfonts/cm/cmbx12.pfb><C:/Users/Dayz/AppData/Local/Programs/MiKTeX/fonts
+/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Dayz/AppData/Local/Programs/MiKT
+eX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/Dayz/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Dayz/AppData/Local
+/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/Dayz/AppDat
+a/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Users/Dayz
+/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/User
+s/Dayz/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C
+:/Users/Dayz/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.
+pfb><C:/Users/Dayz/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm
+/cmsy10.pfb><C:/Users/Dayz/AppData/Local/Programs/MiKTeX/fonts/type1/public/ams
+fonts/cm/cmti10.pfb><C:/Users/Dayz/AppData/Local/Programs/MiKTeX/fonts/type1/pu
+blic/amsfonts/cm/cmtt10.pfb>
+Output written on "Informe del proyecto.pdf" (7 pages, 196036 bytes).
+PDF statistics:
+ 101 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+
