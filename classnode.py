@@ -671,8 +671,9 @@ class ProgramNode(ClassNode):
                 return False
             
     #["override_expr"],["let_dec"],["func_dec"],["var_reasign"],["print_stat"],["condictional_stat"],["loop_stat"],["lenguage_funtion"],["break_exp"],["return_exp"],["continue_exp"],["epsilon"]
-    def build_ast(self,productionList,context,indexProduc=[1]):
+    def build_ast(self,productionList,context,indexProduc=[0]):
         self.context = context
+        
         
         
         #indexProduc[0]=0
@@ -681,12 +682,18 @@ class ProgramNode(ClassNode):
         head=None
         while indexProduc[0]<len(productionList) :
             head=productionList[indexProduc[0]].head
+            
+            if head.name=="program" or head.name=="stat_list" or head.name=="stat_list_fix" or  head.name=="stat":
+                indexProduc[0]+=1
+                continue
+            
             if productionList[indexProduc[0]].symbols[0]==TokenType.tokClosedBracket:
                 break
-            indexProduc[0]+=1
+            
             #esto se come ciertas producciones
             if head.name in self.posibleProductions:
                 
+            
                 #arreglar esto
                 node=self.posibleProductions[head]()
                 #resolver el nodo
