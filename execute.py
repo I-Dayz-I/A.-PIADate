@@ -5,6 +5,8 @@ import classnode
 
 a=tokenizer("{let int a = 4 + 2; loop(a < 10){ let int b = 2 +3 ; };} ")
 
+#a=tokenizer("{let string a = \"thhiIsAChain\"; loop( true ){ let int b = 2 +3 ; };} ")
+
 p_list = get_result(a)
 p_list.reverse()
 

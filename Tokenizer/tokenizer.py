@@ -1,3 +1,6 @@
+
+import sys
+sys.path.append('.')
 from logging import error
 from unittest import result
 import comp_globals
@@ -42,13 +45,17 @@ def readOperator(chain,currentPos,mytokens,line,column):
     return currentPos
 
 def readString(chain,currentPos,mytokens,line,column):
+    print('reading String')
     currentToken=chain[currentPos]
     currentPos+=1
     while currentPos<len(chain):
+        print(chain[currentPos])
         if chain[currentPos]=="\"":
             break
         currentToken+=str(chain[currentPos])
-    mytokens.append(tokens.Token(comp_globals.TokenType.tokString,line,column,currentToken))
+        currentPos+=1
+    mytokens.append(tokens.Token(comp_globals.TokenType.tokChain,line,column,currentToken))
+    print(currentToken)
     return currentPos
 
 def readAlphaNumeric(chain,currentPos,mytokens,line,column):
@@ -145,13 +152,16 @@ def tokenizer(chain):
             if len(comp_globals.errorsList)>0:
                 return None
             currentPos=numericResult
+        elif currentToken=="\"":
+            print('reading String')
+            new_pos=readString(chain,currentPos,mytokens,line,column)
+            currentPos = new_pos
         elif currentToken.isalpha():
             alphaResult=readAlphaNumeric(chain,currentPos,mytokens,line,column)-1
             if len(comp_globals.errorsList)>0:
                 return None
             currentPos=alphaResult
-        elif currentToken=="\"":
-            stringResult=readString(chain,currentPos,mytokens,line,column)
+
         elif currentToken in comp_globals.operatorsDicc :
             currentPos=readOperator(chain,currentPos,mytokens,line,column)-1
         elif currentToken in comp_globals.puntuationDicc :
