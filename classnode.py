@@ -697,7 +697,7 @@ class ProgramNode(ClassNode):
                 #arreglar esto
                 node=self.posibleProductions[head.name]()
                 #resolver el nodo
-                node.build_ast(productionList,indexProduc,self.contex)
+                node.build_ast(productionList,indexProduc,self.context)
                 #agregarlo a los hijos
                 self.ListStatement.append(node)
                 
