@@ -1,4 +1,4 @@
-from class_node import classnode
+#from class_node import classnode
 from comp_globals import TokenType
 
 terminales = ["epsilon", TokenType.tokComma, TokenType.tokOpenSquareBracket, TokenType.tokClosedSquareBracket, TokenType.tokList, TokenType.tokID,
@@ -155,46 +155,46 @@ productions = {
 #------------------------------------- DicNode --------------------------------------------------------#
 #------------------------------------------------------------------------------------------------------#
 
-dicNode = {
-    "program": classnode.ProgramNode(),
-    "stat": classnode.StatementNode(),
-    "break": classnode.BreakNode(),
-    "let_dec": classnode.LetNode(),
-    "func_dec": classnode.FucNode(),
-    "print_stat": classnode.PrintNode(),
-    "condictional_stat": classnode.Condictional_statNode(),
-    "if_stat": classnode.IfNode(),
-    "elif_stat": classnode.ElifNode(),
-    "else_stat": classnode.elseNode(),
-    "loop_stat": classnode.loopNode(),
-    "die": classnode.dieNode(),
-    "modify": classnode.modifyNode(),
-    "evolve": classnode.evolveNode(),
-    "add": classnode.AddNode(),
-    "move": classnode.moveNode(),
-    "eat": classnode.eatNode(),
-    "create": classnode.createNode(),
-    "func_call": classnode.func_callNode(),
-    "vectorial": classnode.vectorialNode(),
-    "dic_dec": classnode.DicNode(),
-    "search_dic": classnode.SearchDicNode(),
-    "recieve_dic": classnode.RecieveDicNode(),
-    "var_reasign": classnode.RedeclareVar(),
-    "return_exp": classnode.ReturnNode(),
+# dicNode = {
+#     "program": classnode.ProgramNode(),
+#     "stat": classnode.StatementNode(),
+#     "break": classnode.BreakNode(),
+#     "let_dec": classnode.LetNode(),
+#     "func_dec": classnode.FucNode(),
+#     "print_stat": classnode.PrintNode(),
+#     "condictional_stat": classnode.Condictional_statNode(),
+#     "if_stat": classnode.IfNode(),
+#     "elif_stat": classnode.ElifNode(),
+#     "else_stat": classnode.elseNode(),
+#     "loop_stat": classnode.loopNode(),
+#     "die": classnode.dieNode(),
+#     "modify": classnode.modifyNode(),
+#     "evolve": classnode.evolveNode(),
+#     "add": classnode.AddNode(),
+#     "move": classnode.moveNode(),
+#     "eat": classnode.eatNode(),
+#     "create": classnode.createNode(),
+#     "func_call": classnode.func_callNode(),
+#     "vectorial": classnode.vectorialNode(),
+#     "dic_dec": classnode.DicNode(),
+#     "search_dic": classnode.SearchDicNode(),
+#     "recieve_dic": classnode.RecieveDicNode(),
+#     "var_reasign": classnode.RedeclareVar(),
+#     "return_exp": classnode.ReturnNode(),
 
-    #------------------------------------- TokTerminales -----------------------------------------------#
+#     #------------------------------------- TokTerminales -----------------------------------------------#
 
-    TokenType.tokBreak: classnode.TookBreakNode(),
-    TokenType.tokID: classnode.IdNode(),
-    TokenType.tokEqual: classnode.EqualNode(),
-    TokenType.tokSum: classnode.SumNode(),
-    TokenType.tokSub: classnode.SubNode(),
-    TokenType.tokMul: classnode.MulNode(),
-    TokenType.tokDiv: classnode.DivNode(),
-    TokenType.tokNumber: classnode.NumberNode(),
-    TokenType.tokChain: classnode.ChainNode(),
-    TokenType.tokTrue: classnode.TrueNode(),
-    TokenType.tokFalse: classnode.FalseNode(),
-    TokenType.tokNone: classnode.NoneNode()
-}
+#     TokenType.tokBreak: classnode.TookBreakNode(),
+#     TokenType.tokID: classnode.IdNode(),
+#     TokenType.tokEqual: classnode.EqualNode(),
+#     TokenType.tokSum: classnode.SumNode(),
+#     TokenType.tokSub: classnode.SubNode(),
+#     TokenType.tokMul: classnode.MulNode(),
+#     TokenType.tokDiv: classnode.DivNode(),
+#     TokenType.tokNumber: classnode.NumberNode(),
+#     TokenType.tokChain: classnode.ChainNode(),
+#     TokenType.tokTrue: classnode.TrueNode(),
+#     TokenType.tokFalse: classnode.FalseNode(),
+#     TokenType.tokNone: classnode.NoneNode()
+# }
 
