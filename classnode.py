@@ -674,13 +674,13 @@ class ProgramNode(ClassNode):
     def build_ast(self,productionList,context,indexProduc=[0]):
         self.context = context
 
-        indexProduc[0]=0
+        #indexProduc[0]=0
         self.ListStatement=[]
         self.buildPosible()
         head=None
         while indexProduc[0]<len(productionList) :
             head=productionList[indexProduc[0]].head
-            if productionList[indexProduc[0]].components[0]==TokenType.tokClosedBracket:
+            if productionList[indexProduc[0]].symbols[0]==TokenType.tokClosedBracket:
                 break
             indexProduc[0]+=1
             #esto se come ciertas producciones
