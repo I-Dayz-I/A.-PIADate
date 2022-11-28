@@ -888,7 +888,7 @@ class LetNode(ClassNode):
     def build_ast(self,productionList,indexProduc,context):
         self.context = context
         #agregado el tipo "sale como token todavia no es grave"
-        value=productionList[indexProduc[0]].components[1].value
+        value=productionList[indexProduc[0]].symbols[1].value
         indexProduc[0]+=2
         self.type =eatType(productionList,indexProduc,context)
         #creando id
@@ -969,7 +969,7 @@ class ReasignNode(ClassNode):
         #creando id
         idn=IdNode(self.context)
         #self,id,funcOrVar,defineOrCall,valType=None
-        idn.build_ast(productionList[indexProduc[0]].components[1].head,"var","define",self.type)
+        idn.build_ast(productionList[indexProduc[0]].symbols[1].head,"var","define",self.type)
         self.idnode = idn
 
         #self.ET=self.idnode.RT
@@ -997,10 +997,10 @@ def fillTerm():
     termDicc[TokenType.tokDiv]=DivNode
 
 def eatType(productionList,indexProduc,context):
-    return productionList[indexProduc[0]].components[0]
+    return productionList[indexProduc[0]].symbols[0]
 
 def eatExpression(productionList,indexProduc,context):
-    if len(productionList[indexProduc[0]].components)==3:
+    if len(productionList[indexProduc[0]].symbols)==3:
         component=productionList[indexProduc[0]][1]
         if component in expresionDicc:
             #creamos el node
@@ -1036,7 +1036,7 @@ def eatFactor(productionList,indexProduc,context):
         
     
 def eatTerm(productionList,indexProduc,context):
-    if len(productionList[indexProduc][0].components)==3:
+    if len(productionList[indexProduc][0].symbols)==3:
         component=productionList[indexProduc[0]][1]    
         if component in termDicc:
             #creamos el node
@@ -1258,7 +1258,7 @@ class FucNode(ClassNode):
         #creando id
         idn=IdNode(self.context)
         #self,id,funcOrVar,defineOrCall,valType=None
-        idn.build_ast(productionList[indexProduc][0].components[1],"func","define",None)
+        idn.build_ast(productionList[indexProduc][0].symbols[1],"func","define",None)
         
         self.idnode = idn
         #esta parte busca los parametros 
@@ -1290,7 +1290,7 @@ def eatArgList(productionList,indexProduc,context):
             return resultId
 
 def eatType(productionList,indexProduc):
-    return productionList[indexProduc][0].components[0]
+    return productionList[indexProduc][0].symbols[0]
 
 class func_callNode(ClassNode):
     def __init__(self,value = None,hijos = None):
@@ -1480,7 +1480,7 @@ class CreatedBoardNode(ClassNode):
         #creando id
         idn=IdNode()
         #self,id,funcOrVar,defineOrCall,valType=None
-        idn.build_ast(productionList[indexProduc][0].components[1],"func","define",None)
+        idn.build_ast(productionList[indexProduc][0].symbols[1],"func","define",None)
 
         indexProduc[0]+=1
         salida= eatArgList(productionList,indexProduc,context)
@@ -1598,7 +1598,7 @@ class CreatePieceNode(ClassNode):
         #creando id
         idn=IdNode()
         #self,id,funcOrVar,defineOrCall,valType=None
-        idn.build_ast(productionList[indexProduc][0].components[1],"func","define",None)
+        idn.build_ast(productionList[indexProduc][0].symbols[1],"func","define",None)
 
         indexProduc[0]+=1
         args= eatArgList(productionList,indexProduc,context)
