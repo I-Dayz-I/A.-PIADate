@@ -1,5 +1,6 @@
-from comp_globals import TokeTypes 
-
+from comp_globals import TokenType 
+import ajedrez.ajedrez.board
+import ajedrez.ajedrez.piece
 
 
     
@@ -26,7 +27,7 @@ class ClassNode():
 
 #-----------------------
 class Context():
-    def __init__(self,name,classNode,fatherContext=None,breakCheck=False):
+    def __init__(self,name,classNode=None,fatherContext=None,breakCheck=False):
         
         self.diccVarContext : dict(str,[str,type,ClassNode])= {}
         self.diccFuncContext : dict(str,[str,[type],ClassNode])={} 
@@ -122,8 +123,8 @@ class Context():
 
 
 #LISTO
-class SumNode(OperatorNode):
-    def __init__(self,context):
+class SumNode(ClassNode):
+    def __init__(self,context): 
         self.Left=None
         self.Right=None
         self.context=context
@@ -152,7 +153,7 @@ class SumNode(OperatorNode):
         self.ET=self.Right.ET
         
 #listo
-class SubNode(OperatorNode):
+class SubNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -181,7 +182,7 @@ class SubNode(OperatorNode):
         self.ET=self.Right.ET
     
 #listo
-class MulNode(OperatorNode):
+class MulNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -207,7 +208,7 @@ class MulNode(OperatorNode):
         self.ET=self.Right.ET
 
 #listo    
-class DivNode(OperatorNode):
+class DivNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -235,7 +236,7 @@ class DivNode(OperatorNode):
         self.RT=self.Left.RT
         self.ET=self.Right.ET
 #listo
-class ModNode(OperatorNode):
+class ModNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -261,7 +262,7 @@ class ModNode(OperatorNode):
         self.ET=self.Right.ET
         
 #listo
-class PowNode(OperatorNode):
+class PowNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -291,7 +292,7 @@ class PowNode(OperatorNode):
 #--------------------------------------------------------------------------- #
 
 #listo
-class EqualNode(CompareNode):
+class EqualNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -321,7 +322,7 @@ class EqualNode(CompareNode):
         self.ET=self.Right.ET
     
 #listo    
-class NotEqualNode(CompareNode):
+class NotEqualNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -350,7 +351,7 @@ class NotEqualNode(CompareNode):
         self.ET=self.Right.ET
 
 #listo    
-class LoENode(CompareNode):
+class LoENode(ClassNode):
     def __init__(self):
         self.Left=None
         self.Right=None
@@ -380,7 +381,7 @@ class LoENode(CompareNode):
         self.ET=self.Right.ET
 
 #listo
-class GoENode(CompareNode):
+class GoENode(ClassNode):
     def __init__(self):
         self.Left=None
         self.Right=None
@@ -410,7 +411,7 @@ class GoENode(CompareNode):
         self.ET=self.Right.ET
 
 #listo
-class GreaterNode(CompareNode):
+class GreaterNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -440,7 +441,7 @@ class GreaterNode(CompareNode):
         self.ET=self.Right.ET
 
 #listo
-class LessNode(CompareNode):
+class LessNode(ClassNode):
     def __init__(self,context):
         self.Left=None
         self.Right=None
@@ -679,7 +680,7 @@ class ProgramNode(ClassNode):
         head=None
         while indexProduc[0]<len(productionList) :
             head=productionList[indexProduc].head
-            if productionList[indexProduc].components[0]==TokeTypes.tokClosedBracket:
+            if productionList[indexProduc].components[0]==TokenType.tokClosedBracket:
                 break
             indexProduc[0]+=1
             #esto se come ciertas producciones
@@ -707,7 +708,7 @@ class ProgramNode(ClassNode):
         #["die"],["modify"],["evolve"],["add"],["move"],["eat"],["create"]
         
         self.posibleProductions["break_exp"]=BreakNode
-        self.posibleProductions["return_exp"]=returnNode
+        self.posibleProductions["return_exp"]=ReturnNode
         self.posibleProductions["continue_exp"]=ContinueNode
     
     
@@ -741,6 +742,59 @@ class ContinueNode(ClassNode):
             if name == "loop":
                 self.loop_validate = True
                 self.loop = classNode
+                break
+
+            contexttemp = contexttemp.fatherContext
+
+
+class ReturnNode(ClassNode):
+    def init(self):
+        self.fun = None
+        self.salida = None
+        self.validatefun = False
+
+        self.RT = None
+        self.ET = None
+
+    def Eval(self):
+        val_salida = []
+
+        count = 0
+        for node_salida in self.salida:
+            val_salida.append(node_salida.Eval())
+            if type(val_salida[count]) != self.fun.argstypes[count]:
+                raise Exception("La salida " + count + " de la función " + self.fun.name + " no coincide con el tipo esperado")
+
+        return val_salida
+    
+    def validateNode(self):
+        if not self.validatefun:
+            return False
+
+        for node_salida in self.salida:
+            if not node_salida.validateNode():
+                return False
+
+        return True
+
+
+    def transpilar(self):
+        return  "return " + self.salida.transpilar()
+
+    def build_ast(self,productionList,indexProduc,context):
+        self.context = context
+
+        indexProduc[0]+=1
+        self.salida= eatExpression(productionList,indexProduc,context)
+
+        contexttemp = self.context
+        
+        while contexttemp == None:
+            classnode = contexttemp.classNode
+
+            if type(classnode) == FucNode:
+                self.validatefun = True
+                self.fun = classnode
                 break
 
             contexttemp = contexttemp.fatherContext
@@ -933,14 +987,14 @@ class ReasignNode(ClassNode):
     
 expresionDicc={}
 def fillExpresion():
-    expresionDicc[TokeTypes.tokSub]=SumNode
-    expresionDicc[TokeTypes.tokSum]=SubNode
+    expresionDicc[TokenType.tokSub]=SumNode
+    expresionDicc[TokenType.tokSum]=SubNode
     
 termDicc={}
 def fillTerm():
-    termDicc[TokeTypes.tokMul]=MulNode
-    termDicc[TokeTypes.tokDiv]=DivNode
-    termDicc[TokeTypes.tokDiv]=DivNode
+    termDicc[TokenType.tokMul]=MulNode
+    termDicc[TokenType.tokDiv]=DivNode
+    termDicc[TokenType.tokDiv]=DivNode
 
 def eatType(productionList,indexProduc,context):
     return productionList[indexProduc[0]].components[0]
@@ -973,7 +1027,7 @@ def eatComparer(productionList,indexProduc,context):
 
 def eatFactor(productionList,indexProduc,context):
     component=productionList[indexProduc[0]][1]
-    if component==productionList[indexProduc][0][0]==TokeTypes.tokOpenParen:
+    if component==productionList[indexProduc][0][0]==TokenType.tokOpenParen:
             indexProduc[0]+=1
             return eatExpression(productionList,indexProduc,context)
     else:
@@ -1009,31 +1063,36 @@ def eatAtom(productionList,indexProduc,context):
     elif component=="func_call":
         indexProduc[0]+=1
         if len(productionList[indexProduc][0].component)==4:
-            node=func_callNode(context)
-            node.build_ast(productionList,indexProduc)
+            node=func_callNode()
+            node.build_ast(productionList,indexProduc,context)
             return node
         elif productionList[indexProduc][0].component=="dic_func":
             indexProduc[0]+=2
             return eatDiccFunc(productionList,indexProduc,context)
-        elif productionList[indexProduc][0].component=="matrix_func":
-            indexProduc[0]+=2
-            eatMatrixFunc(productionList,indexProduc,context)
+        #elif productionList[indexProduc][0].component=="matrix_func":
+        #    indexProduc[0]+=2
+        #    eatMatrixFunc(productionList,indexProduc,context)
 
-def eatMatrixFunc(productionList,indexProduc,context):
-    component=productionList[indexProduc][0][0]
-    node =diccMatrixFunc[component](context)
-    
-    indexProduc[0]+=1
-    node.build_ast(productionList,indexProduc)
-    return node
 
-def eatDiccFunc(productionList,indexProduc,context):
-    component=productionList[indexProduc][0][0]
-    node =diccFunDicc[component](context)
+
+def eatDiccFunc():
+    print("llegamos")
+    pass
+#def eatMatrixFunc(productionList,indexProduc,context):
+#    component=productionList[indexProduc][0][0]
+#    node =diccMatrixFunc[component](context)
+#    
+#    indexProduc[0]+=1
+#    node.build_ast(productionList,indexProduc)
+#    return node
+
+# def eatDiccFunc(productionList,indexProduc,context):
+    # component=productionList[indexProduc][0][0]
+    # node =diccFunDicc[component](context)
     
-    indexProduc[0]+=1
-    node.build_ast(productionList,indexProduc,context)
-    return node
+    # indexProduc[0]+=1
+    # node.build_ast(productionList,indexProduc,context)
+    # return node
     
 
 #listo
@@ -1233,7 +1292,7 @@ def eatArgList(productionList,indexProduc,context):
 def eatType(productionList,indexProduc):
     return productionList[indexProduc][0].components[0]
 
-class func_callNode(StatementNode):
+class func_callNode(ClassNode):
     def __init__(self,value = None,hijos = None):
         super().__init__(value,hijos)
         
@@ -1369,7 +1428,7 @@ class BoardNode(ClassNode):
 
 
     def Eval(self,context):
-        return board(self.x,self.y)
+        return BoardNode(self.x,self.y)
     
     def validateNode(self):
         if not self.x.validateNode() or not self.y.validateNode():
@@ -1404,7 +1463,7 @@ class CreatedBoardNode(ClassNode):
 
 
     def Eval(self):
-        return board(self.board.x,self.board.y)
+        return BoardNode(self.board.x,self.board.y)
     
     def validateNode(self):
         if self.context.checkFunc(self.id,[BoardNode]):
