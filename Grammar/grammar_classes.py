@@ -256,7 +256,7 @@ stat += Production([continue_exp])
 stat += Production([_Epsilon])
 
 delete += Production([_Override, _OpenParen, args_list, _ClosedParen])
-print(delete)
+
 
 override_expr += Production([_Override,_OpenParen,args_list,_ClosedParen])
 
@@ -269,7 +269,6 @@ continue_exp += Production([_Continue])
 break_exp+= Production([_Break])
 
 let_dec += Production([_Let,all_types,_ID,_Assign,expr])
-print(delete)
 
 func_dec += Production([_Def,_ID,_OpenParen,params_list,_ClosedParen,_Arrow,all_types,_OpenBracket,stat_list])
 
