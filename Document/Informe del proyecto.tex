@@ -1,0 +1,58 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{listings}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\author{Dayron Fernández Acosta\\ Javier Villar Alonso \\ Julio José Horta Vázques}
+\title{Proyecto de Compilación}
+\begin{document}
+
+
+
+\maketitle
+\newpage
+\makeindex
+\section{Introducción}
+En este trabajo se propone la creación de una gramática y su compilador, tal que permita la simulación de juegos de tableros; centrandonos especificamente en el ajedrez. Para el manejo de este sistema se implementó un lenguaje de dominio específico (DSL, por sus siglas en ingles Domain Specific Language).
+
+\section{Gramática}
+El lenguaje que implementamos permite la creación de código de alto nivel parecido al que observamos a lo largo de la industria. En su creación se encuentra grupos de instrucciones como la definición de de variable y funciones, comparativas y ciclos. En este lenguaje los contextos se encontraran encerrados entre llaves , y todos las posibles oraciones serán seguidas de un punto y coma. En total el lenguaje cuenta con alrededor de 80 producciones, 42 no terminales y 60 terminales. La estructura de esta gramática se diseñó teniendo en cuenta la creación de un parser \textbf{LR(1)}\footnote{Este parser será discutido más adelante.}.
+\subsection{Clases de la Gramática}
+Para el trabajo e implementacion de la gramática se utilizaron varias clases que facilitaron el trabajo a la hora de la declaracion y resolucion. Para la representacion completa del lenguaje fueron utilizadas 5 clases: \textit{Terminal, NoTerminal, Grammar , Production , Symbol}.
+
+\subsubsection{Symbol}
+La clase \textit{Symbol} es utilizada como clase abstracta que permite englobar cualquier componente que forme parte de alguna producción de la gramática. Más importante, en esta clase se encuentra el metodo dinámico \textit{is\_terminal}, el cual me permite identificar con que tipo de instancia hereditaria se está trabajando. Los métodos \textit{\_\_repr\_\_}\footnote{Este metodo sera redefinido en multiples clases, simpre con el objetivo de realizar el seguimiento del código en ejecución más fácil.} son implementados para mostrar de manera mas exacta los valores con los que se trabaja.
+
+
+
+\lstinputlisting[language=Python, firstline = 8 , lastline = 24, caption= Definición de la Clase Symbol]{script_example/grammar_classes.py}
+
+
+
+\subsubsection{Terminal}
+La clase \textit{Terminal} es utilizada para la instanciación de todos los posibles terminales del lenguaje. Para la construción de cada una de estas instancias es necesario el nombre del terminal como \textit{string} y el tipo de \textit{token}\footnote{Los tipos de token son la manera que tenemos de conocer el tipo de valor real del Terminal} que es. Además, esta es heredera de la clase \textit{Symbol} .
+
+
+\lstinputlisting[language=Python, firstline = 27 , lastline = 36,caption = Definición de la Clase Terminal]{script_example/grammar_classes.py}
+
+
+\subsubsection{NoTerminal}
+Esta clase es la contraparte de la anterior, con ella se instancian todas los \textit{Symbols} que son cabeza de una producción. Esta además de contar la con la propiedad del nombre, mantiene una lista de todos las producciones que genera. Esta última propiedad es ajustada a través de un método, la redefinición de \textit{\_\_iadd\_\_}\footnote{ += }.
+
+
+\lstinputlisting[language=Python, firstline = 73 , lastline = 87,caption = Definición de la Clase No Terminal]{script_example/grammar_classes.py}
+
+
+\subsection{Production}
+La clase \textit{Production) esta simplemente definida como una lista de \textit{Symbols} y una propiedad llamada \textit{head} que es un \textit{NoTerminal}. La lista de elementos es declarada a la hora de instanciar la producción, sin embargo, la cabeza de ella será actualizada a la hora de añadir dicha produción al no terminal correspondiente.
+  
+ 
+    
+    
+\section{Tokenizer}
+
+
+\end{document}
